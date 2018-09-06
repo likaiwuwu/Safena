@@ -12,6 +12,6 @@ import Foundation
 extension NotifyViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return nearbyUserList.count
+        return userList.count
     }    
 }

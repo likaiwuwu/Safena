@@ -16,7 +16,7 @@ extension NotifyViewController: UITableViewDelegate {
         
         let user: UserModel
         
-        user = nearbyUserList[indexPath.row]
+        user = userList[indexPath.row]
         
         cell.nameLabel.text = user.name.name()
         cell.distanceLabel.text = "6840"
