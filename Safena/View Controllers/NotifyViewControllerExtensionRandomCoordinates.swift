@@ -15,10 +15,10 @@ extension NotifyViewController {
         for index in 1...2 {
             
             // AccountID generation.
-            let accountID1 = refUsers.childByAutoId().key
-            let accountID2 = refUsers.childByAutoId().key
-            let accountID3 = refUsers.childByAutoId().key
-            let accountID4 = refUsers.childByAutoId().key
+            let accountID1 = ref.child(FRDKeys.Users).childByAutoId().key
+            let accountID2 = ref.child(FRDKeys.Users).childByAutoId().key
+            let accountID3 = ref.child(FRDKeys.Users).childByAutoId().key
+            let accountID4 = ref.child(FRDKeys.Users).childByAutoId().key
             
             // Write coordinates.
             

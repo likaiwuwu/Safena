@@ -11,6 +11,7 @@ import CoreLocation
 import Firebase
 import FirebaseDatabase
 
+
 class NotifyUserModel {
     
     // Account ID
@@ -24,23 +25,6 @@ class NotifyUserModel {
     var uuid: NotifyUUIDModel
     // Is Notifying
     var isNotifying: Bool
-    
-    // Enums
-    enum FRDKeys {
-        static let AccountID = "Account ID"
-        static let Name = "Name"
-        static let FirstName = "First Name"
-        static let LastName = "Last Name"
-        static let Location = "Location"
-        static let Coordinate = "Coordinate"
-        static let Latitude = "Latitude"
-        static let Longitude = "Longitude"
-        static let UUID = "UUID"
-        static let Users = "Users"
-        static let UUIDVictim = "Victim UUID"
-        static let UUIDPreviousVictim = "Previous Victim UUID"
-        static let IsNotifying = "Is Notifying"
-    }
     
     init(accountID: String = "", name: NotifyNameModel = NotifyNameModel(), location: CLLocation = CLLocation(), uuid: NotifyUUIDModel = NotifyUUIDModel(), isNotifying: Bool = false) {
         self.accountID = accountID
@@ -58,14 +42,15 @@ class NotifyUserModel {
         let name = [FRDKeys.FirstName: self.name.firstName, FRDKeys.LastName: self.name.lastName]
         let coordinate = [FRDKeys.Latitude: Int(self.location.coordinate.latitude), FRDKeys.Longitude: Int(self.location.coordinate.longitude)]
         let location = [FRDKeys.Coordinate: coordinate]
+        let uuid = [FRDKeys.UUIDUser: self.uuid.uuidString,
+                    FRDKeys.UUIDVictim: self.uuid.uuidVictimString,
+                    FRDKeys.UUIDPreviousVictim: self.uuid.uuidPreviousVictimString]
         Database.database().reference().child(FRDKeys.Users).child(self.accountID).updateChildValues(
             [FRDKeys.AccountID: accountID,
-             FRDKeys.Name: name,
+             FRDKeys.NotifyNameModel: name,
              FRDKeys.Location: location,
              FRDKeys.IsNotifying: isNotifying,
-             FRDKeys.UUID: uuid.uuidString,
-             FRDKeys.UUIDVictim: uuid.uuidVictimString,
-             FRDKeys.UUIDPreviousVictim: uuid.uuidPreviousVictimString
+             FRDKeys.NotifyUUIDModel: uuid
             ]
         )
     }
@@ -80,7 +65,7 @@ class NotifyUserModel {
     func updateLocationCoordinate(coordinate: CLLocationCoordinate2D) {
         let coordinatePost = [FRDKeys.Latitude: coordinate.latitude,
                               FRDKeys.Longitude: coordinate.longitude]
-        updateSelfValue(key: "\(FRDKeys.Location)/\(FRDKeys.Coordinate)", value: coordinatePost)
+        updateSelfValue(key: FRDKeys.Coordinate, value: coordinatePost)
     }
     
     func renewUUID() {
@@ -89,28 +74,28 @@ class NotifyUserModel {
     
     func updateUUID(uuid: String) {
         self.uuid.uuidString = uuid
-        updateSelfValue(key: FRDKeys.UUID, value: self.uuid.uuidString)
+        updateSelfValue(key: FRDKeys.ToUUIDUser, value: self.uuid.uuidString)
     }
     
     func updateVictimUUID(userList: [NotifyUserModel], victimUUIDString: String) {
         userList.forEach { (user) in
-            updateValue(accountID: user.accountID, key: FRDKeys.UUIDVictim, value: victimUUIDString)
+            updateValue(accountID: user.accountID, key: FRDKeys.ToUUIDVictim, value: victimUUIDString)
         }
     }
     
     func updatePreviousVictimUUID(previousUUID: String) {
         self.uuid.uuidPreviousVictimString = previousUUID
-        updateSelfValue(key: FRDKeys.UUIDPreviousVictim, value: self.uuid.uuidPreviousVictimString)
+        updateSelfValue(key: FRDKeys.ToUUIDPreviousVictim, value: self.uuid.uuidPreviousVictimString)
     }
     
     // Private Updates
     
     private func updateSelfValue(key: String, value: Any) {
-        Database.database().reference().child(FRDKeys.Users).child(self.accountID).updateChildValues([key : value])
+        updateValue(accountID: self.accountID, key: key, value: value)
     }
     
     private func updateValue(accountID: String, key: String, value: Any) {
-        Database.database().reference().child(FRDKeys.Users).child(accountID).updateChildValues([key : value])
+        ref.child(FRDKeys.Users).child(accountID).updateChildValues([key : value])
     }
     
     // Equitable

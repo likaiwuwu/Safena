@@ -12,12 +12,44 @@ import FirebaseDatabase
 import CoreLocation
 import CoreBluetooth
 
+var ref = Database.database().reference()
+var refUsers = ref.child("Users")
+
+//MARK:- Enums
+
+enum FRDKeys {
+    // Just Child
+    static let AccountID = "Account ID"
+    static let NotifyNameModel = "Notify Name Model"
+    static let FirstName = "First Name"
+    static let LastName = "Last Name"
+    static let Location = "Location"
+    static let Coordinate = "Coordinate"
+    static let Latitude = "Latitude"
+    static let Longitude = "Longitude"
+    static let NotifyUUIDModel = "Notify UUID Model"
+    static let Users = "Users"
+    static let UUIDUser = "User UUID"
+    static let UUIDVictim = "Victim UUID"
+    static let UUIDPreviousVictim = "Previous Victim UUID"
+    static let IsNotifying = "Is Notifying"
+    
+    // Everything to Child
+    
+    static let ToFirstName = "Notify Name ModelFirst Name"
+    static let ToLastName = "Notify Name ModelLast Name"
+    static let ToCoordinate = "Location/Coordinate"
+    static let ToLatitude = "Location/Coordinate/Latitude"
+    static let ToLongitude = "Location/Coordinate/Longitude"
+    static let ToUUIDUser = "Notify UUID Model/User UUID"
+    static let ToUUIDVictim = "Notify UUID Model/Victim UUID"
+    static let ToUUIDPreviousVictim = "Notify UUID Model/Previous Victim UUID"
+    
+}
+
 //CBPeripheralManagerDelegate
 //CBCentralManagerDelegate
 class NotifyViewController: UIViewController, CLLocationManagerDelegate, CBPeripheralManagerDelegate, CBCentralManagerDelegate {
-    
-    var ref: DatabaseReference!
-    var refUsers: DatabaseReference!
     
     let locationManager = CLLocationManager()
     var centralManager = CBCentralManager()
@@ -30,24 +62,6 @@ class NotifyViewController: UIViewController, CLLocationManagerDelegate, CBPerip
     var notifyingUserList = [NotifyUserModel]()
     var fakeUser = NotifyUserModel()
     
-    //MARK:- Enums
-    
-    enum FRDKeys {
-        static let AccountID = "Account ID"
-        static let Name = "Name"
-        static let FirstName = "First Name"
-        static let LastName = "Last Name"
-        static let Location = "Location"
-        static let Coordinate = "Coordinate"
-        static let Latitude = "Latitude"
-        static let Longitude = "Longitude"
-        static let UUID = "UUID"
-        static let Users = "Users"
-        static let VictimUUID = "Victim UUID"
-        static let PreviousVictimUUID = "Previous Victim UUID"
-        static let IsNotifying = "Is Notifying"
-    }
-    
     //MARK:- Outlets
     
     @IBOutlet weak var notifyButtonOutlet: UIButton!
@@ -57,19 +71,13 @@ class NotifyViewController: UIViewController, CLLocationManagerDelegate, CBPerip
     
     @IBAction func notifyButtonAction(_ sender: UIButton) {
         if fakeUser.isNotifying == false {
-            print("IS ADVERTISING AFTER ADVERTISE DEVICE: \(peripheralManager.isAdvertising)")
             advertiseDevice(region: fakeUser.asBeaconRegion())
-            print("IS ADVERTISING BEFORE ADVERTISE DEVICE: \(peripheralManager.isAdvertising)")
             fakeUser.updateIsNotifying(isNotifying: true)
             fakeUser.updateVictimUUID(userList: userList, victimUUIDString: fakeUser.uuid.uuidString)
-            print(peripheralManager.isAdvertising)
         } else {
-            print("IS ADVERTISING BEFORE STOP ADVERTISING DEVICE: \(peripheralManager.isAdvertising)")
             peripheralManager.stopAdvertising()
-            print("IS ADVERTISING AFTER STOP ADVERTISING DEVICE: \(peripheralManager.isAdvertising)")
             fakeUser.updateIsNotifying(isNotifying: false)
             fakeUser.updateVictimUUID(userList: userList, victimUUIDString: "")
-            print(peripheralManager.isAdvertising)
         }
         sender.isSelected = fakeUser.isNotifying
         self.bystanderTableView.reloadData()
@@ -81,10 +89,13 @@ class NotifyViewController: UIViewController, CLLocationManagerDelegate, CBPerip
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        fakeUser = NotifyUserModel(accountID: refUsers.childByAutoId().key, name: NotifyNameModel(firstName: "Self-Li-Kai", lastName: "Self-Wu"), location: CLLocation(latitude: 0, longitude: 0), uuid: NotifyUUIDModel())
+        fakeUser.postAsUserOnFRD()
+        
+        //MARK:- FAKE INITIALIZATION (WILL BE REPLACED WITH FIREBASE AUTH)
+        
         //        peripheralManager = CBPeripheralManager(delegate: self, queue: nil)
         //        centralManager = CBCentralManager(delegate: self, queue: nil)
-        
-        refUsers = Database.database().reference().child(FRDKeys.Users)
         
         // TableView
         bystanderTableView.delegate = self
@@ -108,14 +119,8 @@ class NotifyViewController: UIViewController, CLLocationManagerDelegate, CBPerip
             configureLocationManager(desiredAccuracy: kCLLocationAccuracyBest, allowsBackgroundLocationUpdates: true, distanceFilter: 1)
             locationManager.startUpdatingLocation()
             locationManager.showsBackgroundLocationIndicator = true
-            print("Is Monitoring Available: \(CLLocationManager.isMonitoringAvailable(for: CLBeaconRegion.self))")
-            print("Is Ranging Available: \(CLLocationManager.isRangingAvailable())")
         }
         
-        
-        //MARK:- FAKE INITIALIZATION (WILL BE REPLACED WITH FIREBASE AUTH)
-        fakeUser = NotifyUserModel(accountID: refUsers.childByAutoId().key, name: NotifyNameModel(firstName: "Self-Li-Kai", lastName: "Self-Wu"), location: CLLocation(latitude: 0, longitude: 0), uuid: NotifyUUIDModel())
-        fakeUser.postAsUserOnFRD()
         observeValueUserFromFRD()
         observeVictimUUIDFromUUID()
         
@@ -150,7 +155,7 @@ class NotifyViewController: UIViewController, CLLocationManagerDelegate, CBPerip
         switch (peripheral.state) {
         case .poweredOn:
             print("peripheral.state is .poweredOn")
-             break;
+            break;
         case .poweredOff:
             print("peripheral.state is .poweredOff")
             break;
@@ -223,17 +228,11 @@ class NotifyViewController: UIViewController, CLLocationManagerDelegate, CBPerip
     //MARK:- Firebase Realtime Database
     
     func observeVictimUUIDFromUUID() {
-        print("In Observe Victim UUID From UUID")
-        refUsers.child("\(fakeUser.accountID)/Victim UUID").observe(DataEventType.value) { (snapshot) in
-            print(snapshot)
+        refUsers.child("\(fakeUser.accountID)/Notify UUID Model/Victim UUID").observe(DataEventType.value) { (snapshot) in
             let victimUUIDString = snapshot.value as! String
-            print("victimUUIDString = \(snapshot.value as! String)")
-            print("victimUUIDString.count = \(victimUUIDString.count)")
             if (victimUUIDString.count != 0) {
-                self.fakeUser.updatePreviousVictimUUID(previousUUID: victimUUIDString)
-                print("self.centralManager.state == .poweredon = \(self.centralManager.state == .poweredOn)")
-                if let user = self.findUserFromUserList(uuid: snapshot.value as! String), self.centralManager.state == .poweredOn {
-                    print("user.accountID = \(user.accountID)")
+                if let user = self.findUserFromUserList(uuid: victimUUIDString) {
+                    self.fakeUser.updatePreviousVictimUUID(previousUUID: victimUUIDString)
                     self.startMonitoringAndRangingUser(user: user)
                 }
             } else {
@@ -255,42 +254,42 @@ class NotifyViewController: UIViewController, CLLocationManagerDelegate, CBPerip
     
     func observeValueUserFromFRD() {
         refUsers.observe(.value, with: { snapshot in
-            //if the reference have some values
             if snapshot.hasChildren() {
-                //clearing the list
-                
                 self.userList.removeAll()
-                //iterating through all the values
                 for userObject in snapshot.children {
-                    // Getting let userObject = user.value as? [String: AnyObject]
-                    // Getting account id
-                    
                     let user1 = userObject as! DataSnapshot
                     let user = user1.value as! [String: Any]
                     
-                    let userAccountID = user[FRDKeys.AccountID] as? String ?? "N/A"
+                    let userAccountID = user[FRDKeys.AccountID] as! String
                     
-                    let userCoordinate = user[FRDKeys.Coordinate] as? CLLocationCoordinate2D
-                    let userLocation = CLLocation(latitude: userCoordinate?.latitude ?? 0, longitude: userCoordinate?.longitude ?? 0)
-                    // Getting Name
-                    let userName = user[FRDKeys.Name] as! [String: String]
-                    let userFirstName = userName[FRDKeys.FirstName] ?? ""
-                    let userLastName = userName[FRDKeys.LastName] ?? ""
-                    let newUserModel = NotifyNameModel(firstName: userFirstName , lastName: userLastName)
+                    let userLocation = user[FRDKeys.Location] as! [String: Any]
+                    let userCoordinate = userLocation[FRDKeys.Coordinate] as! [String: Any]
+                    let userLatitude = userCoordinate[FRDKeys.Latitude] as! CLLocationDegrees
+                    let userLongitude = userCoordinate[FRDKeys.Longitude] as! CLLocationDegrees
+                    let location = CLLocation(latitude: userLatitude, longitude: userLongitude)
+                    
+                    // Getting Notify Name Model
+                    let userName = user[FRDKeys.NotifyNameModel] as! [String: Any]
+                    let userNameFirst = userName[FRDKeys.FirstName] as! String
+                    let userNameLast = userName[FRDKeys.LastName] as! String
+                    let name = NotifyNameModel(firstName: userNameFirst , lastName: userNameLast)
+                    
                     // Getting is notifying
                     let userIsNotifying = user[FRDKeys.IsNotifying] as! Bool
+                    
+                    let userUUID = user[FRDKeys.NotifyUUIDModel] as! [String: Any]
                     // Getting user UUID
-                    let userUUIDString = user[FRDKeys.UUID] as! String
+                    let userUUIDUser = userUUID[FRDKeys.UUIDUser] as! String
                     // Getting user victim UUID
-                    let userVictimUUIDString = user[FRDKeys.VictimUUID] as! String
+                    let userUUIDVictim = userUUID[FRDKeys.UUIDVictim] as! String
                     // Getting use previous victim UUID
-                    let userPreviousVictimUUIDString = user[FRDKeys.PreviousVictimUUID] as! String
-                    let uuid = NotifyUUIDModel(uuid: userUUIDString, uuidVictim: userVictimUUIDString, uuidPreviousVictim: userPreviousVictimUUIDString)
+                    let userUUIDPreviousVictim = userUUID[FRDKeys.UUIDPreviousVictim] as! String
+                    let uuid = NotifyUUIDModel(uuid: userUUIDUser, uuidVictim: userUUIDVictim, uuidPreviousVictim: userUUIDPreviousVictim)
                     
                     // Creating artist object with model and fetched values
-                    let userModel = NotifyUserModel(accountID: userAccountID, name: newUserModel, location: userLocation, uuid: uuid, isNotifying: userIsNotifying)
+                    let userModel = NotifyUserModel(accountID: userAccountID, name: name, location: location, uuid: uuid, isNotifying: userIsNotifying)
                     //appending it to list
-//                    let distance: CLLocationDistance = locationManager.distance(from: userModel.location)
+                    //                    let distance: CLLocationDistance = locationManager.distance(from: userModel.location)
                     if (userModel.accountID != self.fakeUser.accountID) {
                         self.userList.append(userModel)
                     }
