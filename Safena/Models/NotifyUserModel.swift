@@ -25,6 +25,7 @@ class NotifyUserModel {
     var uuid: NotifyUUIDModel
     // Is Notifying
     var isNotifying: Bool
+    lazy var beaconRegion = self.asBeaconRegion()
     
     init(accountID: String = "", name: NotifyNameModel = NotifyNameModel(), location: CLLocation = CLLocation(), uuid: NotifyUUIDModel = NotifyUUIDModel(), isNotifying: Bool = false) {
         self.accountID = accountID

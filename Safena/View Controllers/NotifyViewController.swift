@@ -15,6 +15,12 @@ import CoreBluetooth
 var ref = Database.database().reference()
 var refUsers = ref.child("Users")
 
+func printt(_ message: String) {
+    print()
+    print(message)
+    print()
+}
+
 //MARK:- Enums
 
 enum FRDKeys {
@@ -49,17 +55,12 @@ enum FRDKeys {
 
 //CBPeripheralManagerDelegate
 //CBCentralManagerDelegate
-class NotifyViewController: UIViewController, CLLocationManagerDelegate, CBPeripheralManagerDelegate, CBCentralManagerDelegate {
+class NotifyViewController: UIViewController {
     
     let locationManager = CLLocationManager()
-    var centralManager = CBCentralManager()
     var peripheralManager = CBPeripheralManager()
     
-    var myPeripheral: CBPeripheral!
-    var peripheralData: Dictionary<String, Any> = [:]
-    
     var userList = [NotifyUserModel]()
-    var notifyingUserList = [NotifyUserModel]()
     var fakeUser = NotifyUserModel()
     
     //MARK:- Outlets
@@ -91,12 +92,7 @@ class NotifyViewController: UIViewController, CLLocationManagerDelegate, CBPerip
         
         fakeUser = NotifyUserModel(accountID: refUsers.childByAutoId().key, name: NotifyNameModel(firstName: "Self-Li-Kai", lastName: "Self-Wu"), location: CLLocation(latitude: 0, longitude: 0), uuid: NotifyUUIDModel())
         fakeUser.postAsUserOnFRD()
-        
-        //MARK:- FAKE INITIALIZATION (WILL BE REPLACED WITH FIREBASE AUTH)
-        
-        //        peripheralManager = CBPeripheralManager(delegate: self, queue: nil)
-        //        centralManager = CBCentralManager(delegate: self, queue: nil)
-        
+                
         // TableView
         bystanderTableView.delegate = self
         bystanderTableView.dataSource = self
@@ -113,7 +109,6 @@ class NotifyViewController: UIViewController, CLLocationManagerDelegate, CBPerip
         
         locationManager.delegate = self
         peripheralManager.delegate = self
-        centralManager.delegate = self
         self.locationManager.requestAlwaysAuthorization()
         if CLLocationManager.locationServicesEnabled() {
             configureLocationManager(desiredAccuracy: kCLLocationAccuracyBest, allowsBackgroundLocationUpdates: true, distanceFilter: 1)
@@ -129,24 +124,30 @@ class NotifyViewController: UIViewController, CLLocationManagerDelegate, CBPerip
         
     }
     
+    func configureLocationManager(desiredAccuracy: CLLocationAccuracy, allowsBackgroundLocationUpdates: Bool, distanceFilter: CLLocationDistance) {
+        locationManager.desiredAccuracy = desiredAccuracy
+        locationManager.allowsBackgroundLocationUpdates = allowsBackgroundLocationUpdates
+        locationManager.distanceFilter = distanceFilter
+    }
+    
     func update(distance: CLProximity) {
         UIView.animate(withDuration: 0.8) { [unowned self] in
             switch distance {
             case .unknown:
                 self.view.backgroundColor = UIColor.gray
-                print("UNKNOWN")
+                printt("UNKNOWN")
                 
             case .far:
                 self.view.backgroundColor = UIColor.blue
-                print("FAR")
+                printt("FAR")
                 
             case .near:
                 self.view.backgroundColor = UIColor.orange
-                print("NEAR")
+                printt("NEAR")
                 
             case .immediate:
                 self.view.backgroundColor = UIColor.red
-                print("IN FRONT")
+                printt("IN FRONT")
             }
         }
     }
@@ -154,83 +155,63 @@ class NotifyViewController: UIViewController, CLLocationManagerDelegate, CBPerip
     func peripheralManagerDidUpdateState(_ peripheral: CBPeripheralManager) {
         switch (peripheral.state) {
         case .poweredOn:
-            print("peripheral.state is .poweredOn")
+            printt("peripheral.state is .poweredOn")
             break;
         case .poweredOff:
-            print("peripheral.state is .poweredOff")
+            printt("peripheral.state is .poweredOff")
             break;
         case .unsupported:
-            print("peripheral.state is .unsupported")
+            printt("peripheral.state is .unsupported")
             break;
         default:
             break;
         }
     }
     
-    func stopMonitoringAndRangingUser(user: NotifyUserModel) {
-        let beaconRegion = user.asBeaconRegion()
-        locationManager.stopMonitoring(for: beaconRegion)
-        print("BEACON REGION: \(beaconRegion.debugDescription) :: STOP MONITORING FOR: \(beaconRegion.debugDescription)")
-        locationManager.stopRangingBeacons(in: beaconRegion)
-        print("BEACON REGION: \(beaconRegion.debugDescription) :: STOP RANGING FOR: \(beaconRegion.debugDescription)")
+    func startMonitoringAndRangingUser(user: NotifyUserModel) {
+        printt("started monitoring")
+        let beaconRegion = user.beaconRegion
+        locationManager.startMonitoring(for: beaconRegion)
+        locationManager.startRangingBeacons(in: beaconRegion)
     }
     
-    func startMonitoringAndRangingUser(user: NotifyUserModel) {
-        let beaconRegion = user.asBeaconRegion()
-        locationManager.startMonitoring(for: beaconRegion)
-        print("BEACON REGION: \(beaconRegion.debugDescription) :: START MONITORING FOR: \(beaconRegion.debugDescription)")
-        locationManager.startRangingBeacons(in: beaconRegion)
-        print("BEACON REGION: \(beaconRegion.debugDescription) :: START RANGING FOR: \(beaconRegion.debugDescription)")
+    func stopMonitoringAndRangingUser(user: NotifyUserModel) {
+        printt("stopped monitoring")
+        let beaconRegion = user.beaconRegion
+        locationManager.stopMonitoring(for: beaconRegion)
+        locationManager.stopRangingBeacons(in: beaconRegion)
     }
     
     //MARK:- iBeacon
     
     func centralManagerDidUpdateState(_ central: CBCentralManager) {
         switch central.state {
-            
         case .unknown:
-            print("central.state is .unknown")
+            printt("central.state is .unknown")
         case .resetting:
-            print("central.state is .resetting")
+            printt("central.state is .resetting")
         case .unsupported:
-            print("central.state is .unsupported")
+            printt("central.state is .unsupported")
         case .unauthorized:
-            print("central.state is .unauthorized")
+            printt("central.state is .unauthorized")
         case .poweredOff:
-            print("central.state is .poweredOff")
+            printt("central.state is .poweredOff")
         case .poweredOn:
-            print("central.state is .poweredOn")
+            printt("central.state is .poweredOn")
         }
-        
-    }
-    
-    func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String : Any], rssi RSSI: NSNumber) {
-        print(peripheral)
-        //        myPeripheral = peripheral
     }
     
     func advertiseDevice(region : CLBeaconRegion) {
         let peripheralData = region.peripheralData(withMeasuredPower: nil)
         peripheralManager.startAdvertising(((peripheralData as NSDictionary) as! [String : Any]))
     }
-    
-    func peripheralManagerDidStartAdvertising(_ peripheral: CBPeripheralManager, error: Error?) {
-        print("Peripheral is advertising: \(peripheral.isAdvertising)")
-        print("ERROR: \(error?.localizedDescription ?? "No localized description")")
-        print("ERROR DEBUG DESCRIPTION: \(error.debugDescription)")
-    }
-    
-    func peripheralManagerIsReady(toUpdateSubscribers peripheral: CBPeripheralManager) {
-        print("Peripheral delegate is \(String(describing: peripheral.delegate))")
-        print("Peripheral is advertisting\(peripheral.isAdvertising)")
-    }
-    
+        
     //MARK:- Firebase Realtime Database
     
     func observeVictimUUIDFromUUID() {
         refUsers.child("\(fakeUser.accountID)/Notify UUID Model/Victim UUID").observe(DataEventType.value) { (snapshot) in
             let victimUUIDString = snapshot.value as! String
-            if (victimUUIDString.count != 0) {
+            if (!victimUUIDString.isEmpty) {
                 if let user = self.findUserFromUserList(uuid: victimUUIDString) {
                     self.fakeUser.updatePreviousVictimUUID(previousUUID: victimUUIDString)
                     self.startMonitoringAndRangingUser(user: user)
@@ -240,6 +221,7 @@ class NotifyViewController: UIViewController, CLLocationManagerDelegate, CBPerip
                     self.stopMonitoringAndRangingUser(user: user)
                 }
             }
+            self.fakeUser.updatePreviousVictimUUID(previousUUID: victimUUIDString)
         }
     }
     
