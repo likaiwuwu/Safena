@@ -11,21 +11,17 @@ import CoreLocation
 import Firebase
 import FirebaseDatabase
 
-class UserModel {
+class NotifyUserModel {
     
     // Account ID
     var accountID: String
     // Name
-    var name: NameModel
+    var name: NotifyNameModel
     // Location
     var location: CLLocation
     // Coordinate
     // UUID
-    var uuidString: String
-    // Victim UUID
-    var victimUUIDString: String
-    // Previous Victim UUID
-    var previousVictimUUIDString: String
+    var uuid: NotifyUUIDModel
     // Is Notifying
     var isNotifying: Bool
     
@@ -41,23 +37,21 @@ class UserModel {
         static let Longitude = "Longitude"
         static let UUID = "UUID"
         static let Users = "Users"
-        static let VictimUUID = "Victim UUID"
-        static let PreviousVictimUUID = "Previous Victim UUID"
+        static let UUIDVictim = "Victim UUID"
+        static let UUIDPreviousVictim = "Previous Victim UUID"
         static let IsNotifying = "Is Notifying"
     }
     
-    init(accountID: String = "", name: NameModel = NameModel(), location: CLLocation = CLLocation(), uuidString: String = "", victimUUIDString: String = "", previousVictimUUID: String = "", isNotifying: Bool = false) {
+    init(accountID: String = "", name: NotifyNameModel = NotifyNameModel(), location: CLLocation = CLLocation(), uuid: NotifyUUIDModel = NotifyUUIDModel(), isNotifying: Bool = false) {
         self.accountID = accountID
         self.name = name
         self.location = location
-        self.uuidString = UUID().uuidString
-        self.victimUUIDString = ""
-        self.previousVictimUUIDString = ""
+        self.uuid = uuid
         self.isNotifying = isNotifying
     }
     
     func asBeaconRegion() -> CLBeaconRegion {
-        return CLBeaconRegion(proximityUUID: UUID(uuidString: uuidString)!, major: 1, minor: 1, identifier: name.name())
+        return CLBeaconRegion(proximityUUID: UUID(uuidString: self.uuid.uuidString)!, major: 1, minor: 1, identifier: name.getFullName())
     }
     
     func postAsUserOnFRD() {
@@ -69,9 +63,9 @@ class UserModel {
              FRDKeys.Name: name,
              FRDKeys.Location: location,
              FRDKeys.IsNotifying: isNotifying,
-             FRDKeys.UUID: uuidString,
-             FRDKeys.VictimUUID: victimUUIDString,
-             FRDKeys.PreviousVictimUUID: previousVictimUUIDString
+             FRDKeys.UUID: uuid.uuidString,
+             FRDKeys.UUIDVictim: uuid.uuidVictimString,
+             FRDKeys.UUIDPreviousVictim: uuid.uuidPreviousVictimString
             ]
         )
     }
@@ -94,19 +88,19 @@ class UserModel {
     }
     
     func updateUUID(uuid: String) {
-        self.uuidString = uuid
-        updateSelfValue(key: FRDKeys.UUID, value: uuidString)
+        self.uuid.uuidString = uuid
+        updateSelfValue(key: FRDKeys.UUID, value: self.uuid.uuidString)
     }
     
-    func updateVictimUUID(userList: [UserModel], uuidString: String) {
+    func updateVictimUUID(userList: [NotifyUserModel], victimUUIDString: String) {
         userList.forEach { (user) in
-            updateValue(accountID: user.accountID, key: FRDKeys.VictimUUID, value: uuidString)
+            updateValue(accountID: user.accountID, key: FRDKeys.UUIDVictim, value: victimUUIDString)
         }
     }
     
     func updatePreviousVictimUUID(previousUUID: String) {
-        self.previousVictimUUIDString = previousUUID
-        updateSelfValue(key: FRDKeys.PreviousVictimUUID, value: previousVictimUUIDString)
+        self.uuid.uuidPreviousVictimString = previousUUID
+        updateSelfValue(key: FRDKeys.UUIDPreviousVictim, value: self.uuid.uuidPreviousVictimString)
     }
     
     // Private Updates
@@ -121,11 +115,11 @@ class UserModel {
     
     // Equitable
     
-    static func ==(user1: UserModel, user2: UserModel) -> Bool {
+    static func ==(user1: NotifyUserModel, user2: NotifyUserModel) -> Bool {
         return (user1.accountID == user2.accountID)
     }
     
-    static func !=(user1: UserModel, user2: UserModel) -> Bool {
+    static func !=(user1: NotifyUserModel, user2: NotifyUserModel) -> Bool {
         return !(user1 == user2)
     }
     

@@ -19,12 +19,12 @@
 		4656852B213BD88A00B48B83 /* BystanderTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 46568527213BD88A00B48B83 /* BystanderTableViewCell.xib */; };
 		4656852C213BD88A00B48B83 /* BystanderTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 46568527213BD88A00B48B83 /* BystanderTableViewCell.xib */; };
 		4656852D213BD88A00B48B83 /* BystanderTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 46568527213BD88A00B48B83 /* BystanderTableViewCell.xib */; };
-		46568533213CF53D00B48B83 /* UserModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46568532213CF53D00B48B83 /* UserModel.swift */; };
-		46568534213CF53D00B48B83 /* UserModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46568532213CF53D00B48B83 /* UserModel.swift */; };
-		46568535213CF53D00B48B83 /* UserModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46568532213CF53D00B48B83 /* UserModel.swift */; };
-		4656853C213D116000B48B83 /* NameModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4656853B213D116000B48B83 /* NameModel.swift */; };
-		4656853D213D116000B48B83 /* NameModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4656853B213D116000B48B83 /* NameModel.swift */; };
-		4656853E213D116000B48B83 /* NameModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4656853B213D116000B48B83 /* NameModel.swift */; };
+		46568533213CF53D00B48B83 /* NotifyUserModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46568532213CF53D00B48B83 /* NotifyUserModel.swift */; };
+		46568534213CF53D00B48B83 /* NotifyUserModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46568532213CF53D00B48B83 /* NotifyUserModel.swift */; };
+		46568535213CF53D00B48B83 /* NotifyUserModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46568532213CF53D00B48B83 /* NotifyUserModel.swift */; };
+		4656853C213D116000B48B83 /* NotifyNameModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4656853B213D116000B48B83 /* NotifyNameModel.swift */; };
+		4656853D213D116000B48B83 /* NotifyNameModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4656853B213D116000B48B83 /* NotifyNameModel.swift */; };
+		4656853E213D116000B48B83 /* NotifyNameModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4656853B213D116000B48B83 /* NotifyNameModel.swift */; };
 		46568545213D5FB600B48B83 /* NotifyViewControllerExtensionRandomCoordinates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46568544213D5FB600B48B83 /* NotifyViewControllerExtensionRandomCoordinates.swift */; };
 		46568546213D5FB700B48B83 /* NotifyViewControllerExtensionRandomCoordinates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46568544213D5FB600B48B83 /* NotifyViewControllerExtensionRandomCoordinates.swift */; };
 		46568547213D5FB700B48B83 /* NotifyViewControllerExtensionRandomCoordinates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46568544213D5FB600B48B83 /* NotifyViewControllerExtensionRandomCoordinates.swift */; };
@@ -46,6 +46,9 @@
 		46DA89F32140F0790039CD38 /* NotifyViewControllerExtensionLocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46DA89F22140F0790039CD38 /* NotifyViewControllerExtensionLocationManager.swift */; };
 		46DA89F42140F0790039CD38 /* NotifyViewControllerExtensionLocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46DA89F22140F0790039CD38 /* NotifyViewControllerExtensionLocationManager.swift */; };
 		46DA89F52140F0790039CD38 /* NotifyViewControllerExtensionLocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46DA89F22140F0790039CD38 /* NotifyViewControllerExtensionLocationManager.swift */; };
+		46DA89FB214394050039CD38 /* NotifyUUIDModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46DA89FA214394050039CD38 /* NotifyUUIDModel.swift */; };
+		46DA89FC214394050039CD38 /* NotifyUUIDModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46DA89FA214394050039CD38 /* NotifyUUIDModel.swift */; };
+		46DA89FD214394050039CD38 /* NotifyUUIDModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46DA89FA214394050039CD38 /* NotifyUUIDModel.swift */; };
 		74C6D0F590E21C29F0F63B03 /* Pods_SafenaUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3CD6F56378245980B601353E /* Pods_SafenaUITests.framework */; };
 		ED8C4CC432FD21DC15CD3440 /* Pods_SafenaTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B5B4B3F2C0320C6D450ACC9E /* Pods_SafenaTests.framework */; };
 /* End PBXBuildFile section */
@@ -75,8 +78,8 @@
 		46568524213AD50300B48B83 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		46568526213BD88A00B48B83 /* BystanderTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BystanderTableViewCell.swift; sourceTree = "<group>"; };
 		46568527213BD88A00B48B83 /* BystanderTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = BystanderTableViewCell.xib; sourceTree = "<group>"; };
-		46568532213CF53D00B48B83 /* UserModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserModel.swift; sourceTree = "<group>"; };
-		4656853B213D116000B48B83 /* NameModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NameModel.swift; sourceTree = "<group>"; };
+		46568532213CF53D00B48B83 /* NotifyUserModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotifyUserModel.swift; sourceTree = "<group>"; };
+		4656853B213D116000B48B83 /* NotifyNameModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotifyNameModel.swift; sourceTree = "<group>"; };
 		46568543213D2F6B00B48B83 /* Safena.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Safena.entitlements; sourceTree = "<group>"; };
 		46568544213D5FB600B48B83 /* NotifyViewControllerExtensionRandomCoordinates.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotifyViewControllerExtensionRandomCoordinates.swift; sourceTree = "<group>"; };
 		46568548213D5FF900B48B83 /* NotifyViewControllerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotifyViewControllerDelegate.swift; sourceTree = "<group>"; };
@@ -95,6 +98,7 @@
 		46BA995221356297004034D5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		46BA995E213562C9004034D5 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		46DA89F22140F0790039CD38 /* NotifyViewControllerExtensionLocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotifyViewControllerExtensionLocationManager.swift; sourceTree = "<group>"; };
+		46DA89FA214394050039CD38 /* NotifyUUIDModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotifyUUIDModel.swift; sourceTree = "<group>"; };
 		55496C89E916965EA9DFC97F /* Pods-SafenaTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SafenaTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-SafenaTests/Pods-SafenaTests.release.xcconfig"; sourceTree = "<group>"; };
 		619E5494B4E66C40078E68E7 /* Pods-SafenaUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SafenaUITests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-SafenaUITests/Pods-SafenaUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		689309F6444C453E82E15643 /* Pods-Safena.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Safena.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Safena/Pods-Safena.debug.xcconfig"; sourceTree = "<group>"; };
@@ -187,8 +191,10 @@
 		46568536213CF54200B48B83 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				46568532213CF53D00B48B83 /* UserModel.swift */,
-				4656853B213D116000B48B83 /* NameModel.swift */,
+				46568532213CF53D00B48B83 /* NotifyUserModel.swift */,
+				4656853B213D116000B48B83 /* NotifyNameModel.swift */,
+				46DA89FA214394050039CD38 /* NotifyUUIDModel.swift */,
+				46BA994421356297004034D5 /* SafenaTests */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -197,7 +203,6 @@
 			isa = PBXGroup;
 			children = (
 				46BA992F21356296004034D5 /* Safena */,
-				46BA994421356297004034D5 /* SafenaTests */,
 				46BA994F21356297004034D5 /* SafenaUITests */,
 				46BA992E21356296004034D5 /* Products */,
 				11C23530A7AD5E9E943439F7 /* Pods */,
@@ -503,12 +508,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				46568528213BD88A00B48B83 /* BystanderTableViewCell.swift in Sources */,
+				46DA89FB214394050039CD38 /* NotifyUUIDModel.swift in Sources */,
 				46568545213D5FB600B48B83 /* NotifyViewControllerExtensionRandomCoordinates.swift in Sources */,
 				4656854D213D600600B48B83 /* NotifyViewControllerDataSource.swift in Sources */,
 				46568549213D5FF900B48B83 /* NotifyViewControllerDelegate.swift in Sources */,
-				4656853C213D116000B48B83 /* NameModel.swift in Sources */,
+				4656853C213D116000B48B83 /* NotifyNameModel.swift in Sources */,
 				4656851E213ABEBC00B48B83 /* NotifyViewController.swift in Sources */,
-				46568533213CF53D00B48B83 /* UserModel.swift in Sources */,
+				46568533213CF53D00B48B83 /* NotifyUserModel.swift in Sources */,
 				46BA993121356296004034D5 /* AppDelegate.swift in Sources */,
 				46DA89F32140F0790039CD38 /* NotifyViewControllerExtensionLocationManager.swift in Sources */,
 			);
@@ -519,12 +525,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				46568529213BD88A00B48B83 /* BystanderTableViewCell.swift in Sources */,
+				46DA89FC214394050039CD38 /* NotifyUUIDModel.swift in Sources */,
 				46568546213D5FB700B48B83 /* NotifyViewControllerExtensionRandomCoordinates.swift in Sources */,
 				4656854E213D600600B48B83 /* NotifyViewControllerDataSource.swift in Sources */,
 				4656854A213D5FF900B48B83 /* NotifyViewControllerDelegate.swift in Sources */,
-				4656853D213D116000B48B83 /* NameModel.swift in Sources */,
+				4656853D213D116000B48B83 /* NotifyNameModel.swift in Sources */,
 				46BA994621356297004034D5 /* SafenaTests.swift in Sources */,
-				46568534213CF53D00B48B83 /* UserModel.swift in Sources */,
+				46568534213CF53D00B48B83 /* NotifyUserModel.swift in Sources */,
 				4656851F213ABEBC00B48B83 /* NotifyViewController.swift in Sources */,
 				46DA89F42140F0790039CD38 /* NotifyViewControllerExtensionLocationManager.swift in Sources */,
 			);
@@ -535,12 +542,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				4656852A213BD88A00B48B83 /* BystanderTableViewCell.swift in Sources */,
+				46DA89FD214394050039CD38 /* NotifyUUIDModel.swift in Sources */,
 				46568547213D5FB700B48B83 /* NotifyViewControllerExtensionRandomCoordinates.swift in Sources */,
 				4656854F213D600600B48B83 /* NotifyViewControllerDataSource.swift in Sources */,
 				4656854B213D5FF900B48B83 /* NotifyViewControllerDelegate.swift in Sources */,
-				4656853E213D116000B48B83 /* NameModel.swift in Sources */,
+				4656853E213D116000B48B83 /* NotifyNameModel.swift in Sources */,
 				46BA995121356297004034D5 /* SafenaUITests.swift in Sources */,
-				46568535213CF53D00B48B83 /* UserModel.swift in Sources */,
+				46568535213CF53D00B48B83 /* NotifyUserModel.swift in Sources */,
 				46568520213ABEBC00B48B83 /* NotifyViewController.swift in Sources */,
 				46DA89F52140F0790039CD38 /* NotifyViewControllerExtensionLocationManager.swift in Sources */,
 			);

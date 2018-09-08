@@ -14,11 +14,11 @@ extension NotifyViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "BystanderTableViewCell", for: indexPath) as! BystanderTableViewCell
         
-        let user: UserModel
+        let user: NotifyUserModel
         
         user = userList[indexPath.row]
         
-        cell.nameLabel.text = user.name.name()
+        cell.nameLabel.text = user.name.getFullName()
         cell.distanceLabel.text = "6840"
         
         return cell

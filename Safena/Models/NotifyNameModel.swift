@@ -8,7 +8,7 @@
 
 import Foundation
 
-class NameModel {
+class NotifyNameModel {
     
     var firstName: String
     var lastName: String
@@ -23,7 +23,15 @@ class NameModel {
         self.lastName = ""
     }
     
-    func name() -> String {
+    func getFullName() -> String {
         return "\(firstName) \(lastName)"
+    }
+    
+    func getFirstName() -> String {
+        return firstName
+    }
+    
+    func getLastName() -> String {
+        return lastName
     }
 }
