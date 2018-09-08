@@ -15,7 +15,7 @@ import CoreBluetooth
 var ref = Database.database().reference()
 var refUsers = ref.child("Users")
 
-func printt(_ message: String) {
+func printt(_ message: String = "") {
     print()
     print(message)
     print()
@@ -41,7 +41,6 @@ enum FRDKeys {
     static let IsNotifying = "Is Notifying"
     
     // Everything to Child
-    
     static let ToFirstName = "Notify Name ModelFirst Name"
     static let ToLastName = "Notify Name ModelLast Name"
     static let ToCoordinate = "Location/Coordinate"
@@ -53,14 +52,16 @@ enum FRDKeys {
     
 }
 
-//CBPeripheralManagerDelegate
-//CBCentralManagerDelegate
 class NotifyViewController: UIViewController {
     
     let locationManager = CLLocationManager()
     var peripheralManager = CBPeripheralManager()
     
-    var userList = [NotifyUserModel]()
+    var userList = [NotifyUserModel]() {
+        didSet {
+            self.bystanderTableView.reloadData()
+        }
+    }
     var fakeUser = NotifyUserModel()
     
     //MARK:- Outlets
@@ -81,7 +82,6 @@ class NotifyViewController: UIViewController {
             fakeUser.updateVictimUUID(userList: userList, victimUUIDString: "")
         }
         sender.isSelected = fakeUser.isNotifying
-        self.bystanderTableView.reloadData()
     }
     
     
@@ -90,7 +90,7 @@ class NotifyViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        fakeUser = NotifyUserModel(accountID: refUsers.childByAutoId().key, name: NotifyNameModel(firstName: "Self-Li-Kai", lastName: "Self-Wu"), location: CLLocation(latitude: 0, longitude: 0), uuid: NotifyUUIDModel())
+        fakeUser = NotifyUserModel(accountID: refUsers.childByAutoId().key, name: NotifyNameModel(firstName: "Self-Li-Kai", lastName: "Self-Wu"), location: locationManager.location!, uuid: NotifyUUIDModel())
         fakeUser.postAsUserOnFRD()
                 
         // TableView
@@ -111,13 +111,13 @@ class NotifyViewController: UIViewController {
         peripheralManager.delegate = self
         self.locationManager.requestAlwaysAuthorization()
         if CLLocationManager.locationServicesEnabled() {
-            configureLocationManager(desiredAccuracy: kCLLocationAccuracyBest, allowsBackgroundLocationUpdates: true, distanceFilter: 1)
+            configureLocationManager(desiredAccuracy: kCLLocationAccuracyBest, allowsBackgroundLocationUpdates: true, distanceFilter: 0.1)
             locationManager.startUpdatingLocation()
             locationManager.showsBackgroundLocationIndicator = true
         }
         
         observeValueUserFromFRD()
-        observeVictimUUIDFromUUID()
+        observeVictimUUIDNew()
         
         //DELETE LATER
         refUsers.child(fakeUser.accountID).onDisconnectRemoveValue()
@@ -136,15 +136,12 @@ class NotifyViewController: UIViewController {
             case .unknown:
                 self.view.backgroundColor = UIColor.gray
                 printt("UNKNOWN")
-                
             case .far:
                 self.view.backgroundColor = UIColor.blue
                 printt("FAR")
-                
             case .near:
                 self.view.backgroundColor = UIColor.orange
                 printt("NEAR")
-                
             case .immediate:
                 self.view.backgroundColor = UIColor.red
                 printt("IN FRONT")
@@ -208,8 +205,8 @@ class NotifyViewController: UIViewController {
         
     //MARK:- Firebase Realtime Database
     
-    func observeVictimUUIDFromUUID() {
-        refUsers.child("\(fakeUser.accountID)/Notify UUID Model/Victim UUID").observe(DataEventType.value) { (snapshot) in
+    func observeVictimUUIDNew() {
+        refUsers.child("\(fakeUser.accountID)/Notify UUID Model/Victim UUID").observe(.value) { (snapshot) in
             let victimUUIDString = snapshot.value as! String
             if (!victimUUIDString.isEmpty) {
                 if let user = self.findUserFromUserList(uuid: victimUUIDString) {
@@ -221,7 +218,6 @@ class NotifyViewController: UIViewController {
                     self.stopMonitoringAndRangingUser(user: user)
                 }
             }
-            self.fakeUser.updatePreviousVictimUUID(previousUUID: victimUUIDString)
         }
     }
     
@@ -267,17 +263,16 @@ class NotifyViewController: UIViewController {
                     // Getting use previous victim UUID
                     let userUUIDPreviousVictim = userUUID[FRDKeys.UUIDPreviousVictim] as! String
                     let uuid = NotifyUUIDModel(uuid: userUUIDUser, uuidVictim: userUUIDVictim, uuidPreviousVictim: userUUIDPreviousVictim)
+                    // Getting distance
+                    let distance = self.fakeUser.location.distance(from: location)
                     
                     // Creating artist object with model and fetched values
-                    let userModel = NotifyUserModel(accountID: userAccountID, name: name, location: location, uuid: uuid, isNotifying: userIsNotifying)
+                    let userModel = NotifyUserModel(accountID: userAccountID, name: name, location: location, uuid: uuid, isNotifying: userIsNotifying, distance: distance)
                     //appending it to list
-                    //                    let distance: CLLocationDistance = locationManager.distance(from: userModel.location)
                     if (userModel.accountID != self.fakeUser.accountID) {
                         self.userList.append(userModel)
                     }
                 }
-                //reloading the tableview
-                self.bystanderTableView.reloadData()
             }
         })
     }

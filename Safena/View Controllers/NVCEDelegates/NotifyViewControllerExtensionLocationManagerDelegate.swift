@@ -15,9 +15,7 @@ import CoreBluetooth
 extension NotifyViewController: CLLocationManagerDelegate {
         
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        print(locations[0].coordinate)
-        guard let locValue = manager.location?.coordinate else { return }
-        fakeUser.updateLocationCoordinate(coordinate: locValue)
+        fakeUser.updateLocationCoordinate(coordinate: locations[0].coordinate)
     }
     
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
@@ -62,8 +60,8 @@ extension NotifyViewController: CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didRangeBeacons beacons: [CLBeacon], in region: CLBeaconRegion) {
         printt("DID RANGE BEACONS")
         if beacons.count > 0 {
-            let beacon = beacons[0]
-            update(distance: beacon.proximity)
+            update(distance: beacons[0].proximity)
+//            bystanderTableView.reloadData()
         } else {
             update(distance: .unknown)
         }

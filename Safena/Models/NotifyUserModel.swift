@@ -25,14 +25,18 @@ class NotifyUserModel {
     var uuid: NotifyUUIDModel
     // Is Notifying
     var isNotifying: Bool
+    // Beacon Region
     lazy var beaconRegion = self.asBeaconRegion()
+    // Distance
+    var distance: CLLocationDistance
     
-    init(accountID: String = "", name: NotifyNameModel = NotifyNameModel(), location: CLLocation = CLLocation(), uuid: NotifyUUIDModel = NotifyUUIDModel(), isNotifying: Bool = false) {
+    init(accountID: String = "", name: NotifyNameModel = NotifyNameModel(), location: CLLocation = CLLocation(), uuid: NotifyUUIDModel = NotifyUUIDModel(), isNotifying: Bool = false, distance: CLLocationDistance = 0) {
         self.accountID = accountID
         self.name = name
         self.location = location
         self.uuid = uuid
         self.isNotifying = isNotifying
+        self.distance = distance
     }
     
     func asBeaconRegion() -> CLBeaconRegion {
@@ -66,7 +70,7 @@ class NotifyUserModel {
     func updateLocationCoordinate(coordinate: CLLocationCoordinate2D) {
         let coordinatePost = [FRDKeys.Latitude: coordinate.latitude,
                               FRDKeys.Longitude: coordinate.longitude]
-        updateSelfValue(key: FRDKeys.Coordinate, value: coordinatePost)
+        updateSelfValue(key: FRDKeys.ToCoordinate, value: coordinatePost)
     }
     
     func renewUUID() {
