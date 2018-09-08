@@ -20,7 +20,7 @@ extension NotifyViewController {
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         guard let locValue = manager.location?.coordinate else { return }
-        fakeUser.updateCoordinate(coordinate: locValue)
+        fakeUser.updateLocationCoordinate(coordinate: locValue)
     }
 
     func locationManager(_ manager: CLLocationManager, didStartMonitoringFor region: CLRegion) {

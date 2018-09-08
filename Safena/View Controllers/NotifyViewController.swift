@@ -34,17 +34,18 @@ class NotifyViewController: UIViewController, CLLocationManagerDelegate, CBPerip
     
     enum FRDKeys {
         static let AccountID = "Account ID"
-        static let Coordinate = "Coordinate"
-        static let Latitude = "Latitude"
-        static let Longitude = "Longitude"
-        static let FilterDistance = "Filter Distance"
-        static let IsNotifying = "Is Notifying"
         static let Name = "Name"
         static let FirstName = "First Name"
         static let LastName = "Last Name"
+        static let Location = "Location"
+        static let Coordinate = "Coordinate"
+        static let Latitude = "Latitude"
+        static let Longitude = "Longitude"
         static let UUID = "UUID"
         static let Users = "Users"
         static let VictimUUID = "Victim UUID"
+        static let PreviousVictimUUID = "Previous Victim UUID"
+        static let IsNotifying = "Is Notifying"
     }
     
     //MARK:- Outlets
@@ -113,7 +114,7 @@ class NotifyViewController: UIViewController, CLLocationManagerDelegate, CBPerip
         
         
         //MARK:- FAKE INITIALIZATION (WILL BE REPLACED WITH FIREBASE AUTH)
-        fakeUser = UserModel(accountID: refUsers.childByAutoId().key, name: NameModel(firstName: "Self-Li-Kai", lastName: "Self-Wu"), coordinate: CLLocationCoordinate2D(latitude: 0, longitude: 0))
+        fakeUser = UserModel(accountID: refUsers.childByAutoId().key, name: NameModel(firstName: "Self-Li-Kai", lastName: "Self-Wu"), location: CLLocation(latitude: 0, longitude: 0))
         fakeUser.postAsUserOnFRD()
         
         
@@ -272,6 +273,7 @@ class NotifyViewController: UIViewController, CLLocationManagerDelegate, CBPerip
                     let userAccountID = user[FRDKeys.AccountID] as? String ?? "N/A"
                     
                     let userCoordinate = user[FRDKeys.Coordinate] as? CLLocationCoordinate2D
+                    let userLocation = CLLocation(latitude: userCoordinate?.latitude ?? 0, longitude: userCoordinate?.longitude ?? 0)
                     // Getting Name
                     let userName = user[FRDKeys.Name] as! [String: String]
                     let userFirstName = userName[FRDKeys.FirstName] ?? ""
@@ -280,14 +282,15 @@ class NotifyViewController: UIViewController, CLLocationManagerDelegate, CBPerip
                     // Getting is notifying
                     let userIsNotifying = user[FRDKeys.IsNotifying] as! Bool
                     // Getting user UUID
-                    let userUUIDString = UUID(uuidString: (user[FRDKeys.UUID] as! String))
+                    let userUUIDString = user[FRDKeys.UUID] as! String
                     // Getting user victim UUID
-                    let userVictimUUIDString = UUID(uuidString: user[FRDKeys.VictimUUID] as! String)
+                    let userVictimUUIDString = user[FRDKeys.VictimUUID] as! String
+                    let userPreviousVictimUUIDString = user[FRDKeys.PreviousVictimUUID] as! String
                     
                     // Creating artist object with model and fetched values
-                    let userModel = UserModel(accountID: userAccountID, name: newUserModel, coordinate: userCoordinate ?? CLLocationCoordinate2D(latitude: 0, longitude: 0), isNotifying: userIsNotifying, uuid: userUUIDString ?? UUID(), victimUUID: userVictimUUIDString ?? UUID())
+                    let userModel = UserModel(accountID: userAccountID, name: newUserModel, location: userLocation, uuidString: userUUIDString, victimUUIDString: userVictimUUIDString, previousVictimUUID: userPreviousVictimUUIDString, isNotifying: userIsNotifying)
                     //appending it to list
-                    let distance: CLLocationDistance = locationManager.distance(from: startLocation)
+//                    let distance: CLLocationDistance = locationManager.distance(from: userModel.location)
                     if (userModel.accountID != self.fakeUser.accountID) {
                         self.userList.append(userModel)
                     }

@@ -27,20 +27,20 @@ extension NotifyViewController {
             let coordinate3 = CLLocationCoordinate2D(latitude: CLLocationDegrees(index), longitude: CLLocationDegrees(-index))
             let coordinate4 = CLLocationCoordinate2D(latitude: CLLocationDegrees(-index), longitude: CLLocationDegrees(index))
             
-            let user1 = UserModel(accountID: accountID1, name: NameModel(firstName: "Ashley", lastName: "Smoker"), coordinate: coordinate1, isNotifying: false)
-            let user2 = UserModel(accountID: accountID2, name: NameModel(firstName: "Lichun", lastName: "Wu"), coordinate: coordinate2, isNotifying: false)
-            let user3 = UserModel(accountID: accountID3, name: NameModel(firstName: "John", lastName: "Atanacio"), coordinate: coordinate3, isNotifying: false)
-            let user4 = UserModel(accountID: accountID4, name: NameModel(firstName: "Edward", lastName: "Sweeney"), coordinate: coordinate4, isNotifying: false)
-            
+            let user1 = UserModel(accountID: accountID1, name: NameModel(firstName: "Ashley", lastName: "Smoker"), location: CLLocation(latitude: coordinate1.latitude, longitude: coordinate1.longitude), isNotifying: false)
+            let user2 = UserModel(accountID: accountID2, name: NameModel(firstName: "Li-Chun", lastName: "Wu"), location: CLLocation(latitude: coordinate2.latitude, longitude: coordinate2.longitude), isNotifying: false)
+            let user3 = UserModel(accountID: accountID3, name: NameModel(firstName: "John", lastName: "Atanacio"), location: CLLocation(latitude: coordinate3.latitude, longitude: coordinate3.longitude), isNotifying: false)
+            let user4 = UserModel(accountID: accountID4, name: NameModel(firstName: "Edward", lastName: "Sweeney"), location: CLLocation(latitude: coordinate4.latitude, longitude: coordinate4.longitude), isNotifying: false)
+
             user1.postAsUserOnFRD()
             user2.postAsUserOnFRD()
             user3.postAsUserOnFRD()
             user4.postAsUserOnFRD()
             
-            user1.updateCoordinate(coordinate: coordinate1)
-            user2.updateCoordinate(coordinate: coordinate2)
-            user3.updateCoordinate(coordinate: coordinate3)
-            user4.updateCoordinate(coordinate: coordinate4)
+            user1.updateLocationCoordinate(coordinate: coordinate1)
+            user2.updateLocationCoordinate(coordinate: coordinate2)
+            user3.updateLocationCoordinate(coordinate: coordinate3)
+            user4.updateLocationCoordinate(coordinate: coordinate4)
         }
     }
 }
