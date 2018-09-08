@@ -29,6 +29,10 @@ class UserModel {
     // Victim UUID
     var victimUUID: UUID
     var victimUUIDString: String
+    // Previous Victim UUID
+    var previousVictimUUID: UUID
+    var previousVictimUUIDString: String
+    
     
     // Enums
     enum FRDKeys {
@@ -44,9 +48,10 @@ class UserModel {
         static let UUID = "UUID"
         static let Users = "Users"
         static let VictimUUID = "Victim UUID"
+        static let PreviousVictimUUID = "Previous Victim UUID"
     }
     
-    init(accountID: String = "", name: NameModel = NameModel(), coordinate: CLLocationCoordinate2D = CLLocationCoordinate2D(), isNotifying: Bool = false, uuid: UUID = UUID(), victimUUID: UUID = UUID()) {
+    init(accountID: String = "", name: NameModel = NameModel(), coordinate: CLLocationCoordinate2D = CLLocationCoordinate2D(), isNotifying: Bool = false, uuid: UUID = UUID(), victimUUID: UUID = UUID(), previousVictimUUID: UUID = UUID()) {
         self.accountID = accountID
         self.name = name
         self.coordinate = coordinate
@@ -55,6 +60,14 @@ class UserModel {
         self.uuidString = uuid.uuidString
         self.victimUUID = victimUUID
         self.victimUUIDString = ""
+        self.previousVictimUUID = previousVictimUUID
+        self.previousVictimUUIDString = ""
+    }
+    
+    func updatePreviousVictimUUID(previousUUID: String) {
+        self.victimUUID = UUID(uuidString: previousUUID) ?? UUID()
+        self.victimUUIDString = victimUUID.uuidString
+        updateSelfValue(key: FRDKeys.PreviousVictimUUID, value: victimUUIDString)
     }
     
     func asBeaconRegion() -> CLBeaconRegion {
@@ -77,13 +90,12 @@ class UserModel {
     
     func updateIsNotifying(isNotifying: Bool) {
         self.isNotifying = isNotifying
-        updateValue(key: FRDKeys.IsNotifying, value: isNotifying as Bool)
+        updateSelfValue(key: FRDKeys.IsNotifying, value: isNotifying as Bool)
     }
     
     func updateVictimUUID(userList: [UserModel], uuidString: String) {
-        print("UpdateVictimUUID\(userList)")
         userList.forEach { (user) in
-            updateValue(key: FRDKeys.VictimUUID, value: uuidString)
+            updateValue(accountID: user.accountID, key: FRDKeys.VictimUUID, value: uuidString)
         }
     }
     
@@ -94,24 +106,37 @@ class UserModel {
     func updateUUID(uuid: UUID) {
         self.uuid = uuid
         self.uuidString = uuid.uuidString
-        updateValue(key: FRDKeys.UUID, value: uuidString)
+        updateSelfValue(key: FRDKeys.UUID, value: uuidString)
     }
     
     func updateUUID(uuid: String) {
         if let realUUID = UUID(uuidString: uuid) {
             self.uuid = realUUID
             self.uuidString = realUUID.uuidString
-            updateValue(key: FRDKeys.UUID, value: uuidString)
+            updateSelfValue(key: FRDKeys.UUID, value: uuidString)
         }
     }
     
     func updateCoordinate(coordinate: CLLocationCoordinate2D) {
         let coordinatePost = [FRDKeys.Latitude: coordinate.latitude,
                               FRDKeys.Longitude: coordinate.longitude]
-        updateValue(key: FRDKeys.Coordinate, value: coordinatePost)
+        updateSelfValue(key: FRDKeys.Coordinate, value: coordinatePost)
     }
     
-    private func updateValue(key: String, value: Any) {
+    private func updateSelfValue(key: String, value: Any) {
         Database.database().reference().child(FRDKeys.Users).child(self.accountID).updateChildValues([key : value])
     }
+    
+    private func updateValue(accountID: String, key: String, value: Any) {
+        Database.database().reference().child(FRDKeys.Users).child(accountID).updateChildValues([key : value])
+    }
+    
+    static func ==(user1: UserModel, user2: UserModel) -> Bool {
+        return (user1.accountID == user2.accountID)
+    }
+    
+    static func !=(user1: UserModel, user2: UserModel) -> Bool {
+        return !(user1 == user2)
+    }
+
 }
