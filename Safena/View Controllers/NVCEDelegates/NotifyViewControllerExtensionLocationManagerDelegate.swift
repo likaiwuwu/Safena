@@ -13,36 +13,16 @@ import CoreLocation
 import CoreBluetooth
 
 extension NotifyViewController: CLLocationManagerDelegate {
-        
+    
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         fakeUser.updateLocationCoordinate(coordinate: locations[0].coordinate)
     }
     
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
         printt("""
-                DID FAIL WITH ERROR
-                MANAGER: \(manager.debugDescription)
-                DID FAIL WITH ERROR: \(error.localizedDescription)
-                """)
-    }
-    
-    func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
-        print("DID ENTER REGION")
-                if region is CLBeaconRegion {
-                    // Start ranging only if the feature is available.
-                    if CLLocationManager.isRangingAvailable() {
-                        manager.startRangingBeacons(in: region as! CLBeaconRegion)
-                        print("CONNECTED TO: \(region.identifier)!!!!!!!!!!!!!!!!!!!!!!!!!!")
-                        // Store the beacon so that ranging can be stopped on demand.
-                        // beaconsToRange.append(region as! CLBeaconRegion)
-                    }
-                } else {
-                    print("NOT A CLBEACONREGION")
-                }
-    }
-    
-    func locationManager(_ manager: CLLocationManager, didExitRegion region: CLRegion) {
-        printt("DID EXIT REGION")
+            MANAGER: \(manager.debugDescription)
+            DID FAIL WITH ERROR: \(error.localizedDescription)
+            """)
     }
     
     func locationManager(_ manager: CLLocationManager, monitoringDidFailFor region: CLRegion?, withError error: Error) {
@@ -52,25 +32,24 @@ extension NotifyViewController: CLLocationManagerDelegate {
             ERROR: \(error.localizedDescription)
             """)
     }
-
+    
     private func locationManager(_ manager: CLLocationManager, didStartMonitoringFor region: CLRegion) {
-        printt("DID START MONITORING FOR: \(region.debugDescription)")
+        printt("""
+            MANAGER: \(manager.debugDescription)
+            DID START MONITORING FOR REGION: \(region.debugDescription)
+            """)
     }
     
     func locationManager(_ manager: CLLocationManager, didRangeBeacons beacons: [CLBeacon], in region: CLBeaconRegion) {
         printt("DID RANGE BEACONS")
-        if beacons.count > 0 {
-            update(distance: beacons[0].proximity)
-//            bystanderTableView.reloadData()
-        } else {
-            update(distance: .unknown)
-        }
+        update(distance: beacons.first?.proximity ?? .unknown)
     }
     
     func locationManager(_ manager: CLLocationManager, rangingBeaconsDidFailFor region: CLBeaconRegion, withError error: Error) {
         printt("""
-            RANGING BEACONS DID FAIL FOR
-            rangingBeaconDidFail executed error \(error.localizedDescription) for region \(region.proximityUUID)
+            MANAGER: \(manager.debugDescription)
+            RANGING BEACONS DID FAIL FOR REGION: \(region.debugDescription)
+            WITH ERROR: \(error.localizedDescription)
             """)
     }
     

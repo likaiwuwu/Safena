@@ -16,17 +16,13 @@ extension NotifyViewController: CBPeripheralManagerDelegate {
 
     func peripheralManagerDidStartAdvertising(_ peripheral: CBPeripheralManager, error: Error?) {
         printt("""
-            Peripheral is advertising: \(peripheral.isAdvertising)
+            PERIPHERAL: \(peripheral)
             ERROR: \(error?.localizedDescription ?? "No localized description")
-            ERROR DEBUG DESCRIPTION: \(error.debugDescription)
             """)
     }
     
     func peripheralManagerIsReady(toUpdateSubscribers peripheral: CBPeripheralManager) {
-        print("""
-            Peripheral delegate is \(String(describing: peripheral.delegate))
-            Peripheral is advertisting\(peripheral.isAdvertising)
-            """)
+        print("Peripheral: \(String(describing: peripheral.delegate))")
     }
 
 }

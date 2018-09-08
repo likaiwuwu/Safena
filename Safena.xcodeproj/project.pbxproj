@@ -52,6 +52,9 @@
 		46DA8A08214415E80039CD38 /* NotifyViewControllerExtensionPeripheralManagerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46DA8A07214415E80039CD38 /* NotifyViewControllerExtensionPeripheralManagerDelegate.swift */; };
 		46DA8A09214415E80039CD38 /* NotifyViewControllerExtensionPeripheralManagerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46DA8A07214415E80039CD38 /* NotifyViewControllerExtensionPeripheralManagerDelegate.swift */; };
 		46DA8A0A214415E80039CD38 /* NotifyViewControllerExtensionPeripheralManagerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46DA8A07214415E80039CD38 /* NotifyViewControllerExtensionPeripheralManagerDelegate.swift */; };
+		46DA8A10214436740039CD38 /* Globals.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46DA8A0F214436740039CD38 /* Globals.swift */; };
+		46DA8A11214436740039CD38 /* Globals.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46DA8A0F214436740039CD38 /* Globals.swift */; };
+		46DA8A12214436740039CD38 /* Globals.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46DA8A0F214436740039CD38 /* Globals.swift */; };
 		74C6D0F590E21C29F0F63B03 /* Pods_SafenaUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3CD6F56378245980B601353E /* Pods_SafenaUITests.framework */; };
 		ED8C4CC432FD21DC15CD3440 /* Pods_SafenaTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B5B4B3F2C0320C6D450ACC9E /* Pods_SafenaTests.framework */; };
 /* End PBXBuildFile section */
@@ -103,6 +106,7 @@
 		46DA89F22140F0790039CD38 /* NotifyViewControllerExtensionLocationManagerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotifyViewControllerExtensionLocationManagerDelegate.swift; sourceTree = "<group>"; };
 		46DA89FA214394050039CD38 /* NotifyUUIDModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotifyUUIDModel.swift; sourceTree = "<group>"; };
 		46DA8A07214415E80039CD38 /* NotifyViewControllerExtensionPeripheralManagerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotifyViewControllerExtensionPeripheralManagerDelegate.swift; sourceTree = "<group>"; };
+		46DA8A0F214436740039CD38 /* Globals.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Globals.swift; sourceTree = "<group>"; };
 		55496C89E916965EA9DFC97F /* Pods-SafenaTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SafenaTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-SafenaTests/Pods-SafenaTests.release.xcconfig"; sourceTree = "<group>"; };
 		619E5494B4E66C40078E68E7 /* Pods-SafenaUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SafenaUITests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-SafenaUITests/Pods-SafenaUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		689309F6444C453E82E15643 /* Pods-Safena.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Safena.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Safena/Pods-Safena.debug.xcconfig"; sourceTree = "<group>"; };
@@ -237,6 +241,7 @@
 				4656852F213BE7DF00B48B83 /* Cells */,
 				4656852E213BDBBE00B48B83 /* Nibs */,
 				46568536213CF54200B48B83 /* Models */,
+				46DA8A0F214436740039CD38 /* Globals.swift */,
 			);
 			path = Safena;
 			sourceTree = "<group>";
@@ -528,6 +533,7 @@
 				4656853C213D116000B48B83 /* NotifyNameModel.swift in Sources */,
 				4656851E213ABEBC00B48B83 /* NotifyViewController.swift in Sources */,
 				46568533213CF53D00B48B83 /* NotifyUserModel.swift in Sources */,
+				46DA8A10214436740039CD38 /* Globals.swift in Sources */,
 				46BA993121356296004034D5 /* AppDelegate.swift in Sources */,
 				46DA89F32140F0790039CD38 /* NotifyViewControllerExtensionLocationManagerDelegate.swift in Sources */,
 				46DA8A08214415E80039CD38 /* NotifyViewControllerExtensionPeripheralManagerDelegate.swift in Sources */,
@@ -546,6 +552,7 @@
 				4656853D213D116000B48B83 /* NotifyNameModel.swift in Sources */,
 				46BA994621356297004034D5 /* SafenaTests.swift in Sources */,
 				46568534213CF53D00B48B83 /* NotifyUserModel.swift in Sources */,
+				46DA8A11214436740039CD38 /* Globals.swift in Sources */,
 				4656851F213ABEBC00B48B83 /* NotifyViewController.swift in Sources */,
 				46DA89F42140F0790039CD38 /* NotifyViewControllerExtensionLocationManagerDelegate.swift in Sources */,
 				46DA8A09214415E80039CD38 /* NotifyViewControllerExtensionPeripheralManagerDelegate.swift in Sources */,
@@ -564,6 +571,7 @@
 				4656853E213D116000B48B83 /* NotifyNameModel.swift in Sources */,
 				46BA995121356297004034D5 /* SafenaUITests.swift in Sources */,
 				46568535213CF53D00B48B83 /* NotifyUserModel.swift in Sources */,
+				46DA8A12214436740039CD38 /* Globals.swift in Sources */,
 				46568520213ABEBC00B48B83 /* NotifyViewController.swift in Sources */,
 				46DA89F52140F0790039CD38 /* NotifyViewControllerExtensionLocationManagerDelegate.swift in Sources */,
 				46DA8A0A214415E80039CD38 /* NotifyViewControllerExtensionPeripheralManagerDelegate.swift in Sources */,

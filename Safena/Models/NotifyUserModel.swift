@@ -27,16 +27,13 @@ class NotifyUserModel {
     var isNotifying: Bool
     // Beacon Region
     lazy var beaconRegion = self.asBeaconRegion()
-    // Distance
-    var distance: CLLocationDistance
     
-    init(accountID: String = "", name: NotifyNameModel = NotifyNameModel(), location: CLLocation = CLLocation(), uuid: NotifyUUIDModel = NotifyUUIDModel(), isNotifying: Bool = false, distance: CLLocationDistance = 0) {
+    init(accountID: String = "", name: NotifyNameModel = NotifyNameModel(), location: CLLocation = CLLocation(), uuid: NotifyUUIDModel = NotifyUUIDModel(), isNotifying: Bool = false) {
         self.accountID = accountID
         self.name = name
         self.location = location
         self.uuid = uuid
         self.isNotifying = isNotifying
-        self.distance = distance
     }
     
     func asBeaconRegion() -> CLBeaconRegion {

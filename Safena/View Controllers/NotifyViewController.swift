@@ -7,55 +7,18 @@
 //
 
 import UIKit
-import Firebase
 import FirebaseDatabase
 import CoreLocation
 import CoreBluetooth
 
-var ref = Database.database().reference()
-var refUsers = ref.child("Users")
-
-func printt(_ message: String = "") {
-    print()
-    print(message)
-    print()
-}
-
-//MARK:- Enums
-
-enum FRDKeys {
-    // Just Child
-    static let AccountID = "Account ID"
-    static let NotifyNameModel = "Notify Name Model"
-    static let FirstName = "First Name"
-    static let LastName = "Last Name"
-    static let Location = "Location"
-    static let Coordinate = "Coordinate"
-    static let Latitude = "Latitude"
-    static let Longitude = "Longitude"
-    static let NotifyUUIDModel = "Notify UUID Model"
-    static let Users = "Users"
-    static let UUIDUser = "User UUID"
-    static let UUIDVictim = "Victim UUID"
-    static let UUIDPreviousVictim = "Previous Victim UUID"
-    static let IsNotifying = "Is Notifying"
-    
-    // Everything to Child
-    static let ToFirstName = "Notify Name ModelFirst Name"
-    static let ToLastName = "Notify Name ModelLast Name"
-    static let ToCoordinate = "Location/Coordinate"
-    static let ToLatitude = "Location/Coordinate/Latitude"
-    static let ToLongitude = "Location/Coordinate/Longitude"
-    static let ToUUIDUser = "Notify UUID Model/User UUID"
-    static let ToUUIDVictim = "Notify UUID Model/Victim UUID"
-    static let ToUUIDPreviousVictim = "Notify UUID Model/Previous Victim UUID"
-    
-}
-
 class NotifyViewController: UIViewController {
+    
+    // MARK:- Managers
     
     let locationManager = CLLocationManager()
     var peripheralManager = CBPeripheralManager()
+    
+    // MARK:- Properties
     
     var userList = [NotifyUserModel]() {
         didSet {
@@ -106,9 +69,11 @@ class NotifyViewController: UIViewController {
         let cellNib = UINib(nibName: "BystanderTableViewCell", bundle: nil)
         bystanderTableView.register(cellNib, forCellReuseIdentifier: "BystanderTableViewCell")
         
-        
+        // Managers
         locationManager.delegate = self
         peripheralManager.delegate = self
+        
+        // Location Manager Configurations
         self.locationManager.requestAlwaysAuthorization()
         if CLLocationManager.locationServicesEnabled() {
             configureLocationManager(desiredAccuracy: kCLLocationAccuracyBest, allowsBackgroundLocationUpdates: true, distanceFilter: 0.1)
@@ -116,6 +81,7 @@ class NotifyViewController: UIViewController {
             locationManager.showsBackgroundLocationIndicator = true
         }
         
+        // Firebase Realtime Database Configurations
         observeValueUserFromFRD()
         observeVictimUUIDNew()
         
@@ -124,12 +90,15 @@ class NotifyViewController: UIViewController {
         
     }
     
+    // Configures location manager settings.
     func configureLocationManager(desiredAccuracy: CLLocationAccuracy, allowsBackgroundLocationUpdates: Bool, distanceFilter: CLLocationDistance) {
         locationManager.desiredAccuracy = desiredAccuracy
         locationManager.allowsBackgroundLocationUpdates = allowsBackgroundLocationUpdates
         locationManager.distanceFilter = distanceFilter
     }
     
+    // Continuously logs distance to bystanders.
+    // Changes the color of the background to indicate nearby bystander presence.
     func update(distance: CLProximity) {
         UIView.animate(withDuration: 0.8) { [unowned self] in
             switch distance {
@@ -144,7 +113,7 @@ class NotifyViewController: UIViewController {
                 printt("NEAR")
             case .immediate:
                 self.view.backgroundColor = UIColor.red
-                printt("IN FRONT")
+                printt("IMMEDIATE")
             }
         }
     }
@@ -165,15 +134,17 @@ class NotifyViewController: UIViewController {
         }
     }
     
+    //Starts both monitoring and ranging for parameter user beacon.
     func startMonitoringAndRangingUser(user: NotifyUserModel) {
-        printt("started monitoring")
+        printt("Started Monitoring: \(user)")
         let beaconRegion = user.beaconRegion
         locationManager.startMonitoring(for: beaconRegion)
         locationManager.startRangingBeacons(in: beaconRegion)
     }
     
+    //Stops both monitoring and ranging for parameter user beacon.
     func stopMonitoringAndRangingUser(user: NotifyUserModel) {
-        printt("stopped monitoring")
+        printt("Stopped Monitoring: \(user)")
         let beaconRegion = user.beaconRegion
         locationManager.stopMonitoring(for: beaconRegion)
         locationManager.stopRangingBeacons(in: beaconRegion)
@@ -198,6 +169,7 @@ class NotifyViewController: UIViewController {
         }
     }
     
+    // Begins advertising parameter CLBeaconRegion.
     func advertiseDevice(region : CLBeaconRegion) {
         let peripheralData = region.peripheralData(withMeasuredPower: nil)
         peripheralManager.startAdvertising(((peripheralData as NSDictionary) as! [String : Any]))
@@ -205,6 +177,8 @@ class NotifyViewController: UIViewController {
         
     //MARK:- Firebase Realtime Database
     
+    // Observes the victim uuid from the user's Firebase Realtime Database. When a change is observed,
+    // starts/stops monitoring/ranging and updates previous victim UUID, as well.
     func observeVictimUUIDNew() {
         refUsers.child("\(fakeUser.accountID)/Notify UUID Model/Victim UUID").observe(.value) { (snapshot) in
             let victimUUIDString = snapshot.value as! String
@@ -221,6 +195,7 @@ class NotifyViewController: UIViewController {
         }
     }
     
+    // Finds user object from userList.
     func findUserFromUserList(uuid: String) -> NotifyUserModel? {
         for user in userList {
             if user.uuid.uuidString == uuid {
@@ -230,6 +205,8 @@ class NotifyViewController: UIViewController {
         return nil
     }
     
+    // Observes users Firebase Realtime Database. When a change is observed,
+    // userList is updated.
     func observeValueUserFromFRD() {
         refUsers.observe(.value, with: { snapshot in
             if snapshot.hasChildren() {
@@ -238,8 +215,10 @@ class NotifyViewController: UIViewController {
                     let user1 = userObject as! DataSnapshot
                     let user = user1.value as! [String: Any]
                     
+                    // Getting Account ID
                     let userAccountID = user[FRDKeys.AccountID] as! String
                     
+                    // Getting Location
                     let userLocation = user[FRDKeys.Location] as! [String: Any]
                     let userCoordinate = userLocation[FRDKeys.Coordinate] as! [String: Any]
                     let userLatitude = userCoordinate[FRDKeys.Latitude] as! CLLocationDegrees
@@ -263,11 +242,9 @@ class NotifyViewController: UIViewController {
                     // Getting use previous victim UUID
                     let userUUIDPreviousVictim = userUUID[FRDKeys.UUIDPreviousVictim] as! String
                     let uuid = NotifyUUIDModel(uuid: userUUIDUser, uuidVictim: userUUIDVictim, uuidPreviousVictim: userUUIDPreviousVictim)
-                    // Getting distance
-                    let distance = self.fakeUser.location.distance(from: location)
                     
                     // Creating artist object with model and fetched values
-                    let userModel = NotifyUserModel(accountID: userAccountID, name: name, location: location, uuid: uuid, isNotifying: userIsNotifying, distance: distance)
+                    let userModel = NotifyUserModel(accountID: userAccountID, name: name, location: location, uuid: uuid, isNotifying: userIsNotifying)
                     //appending it to list
                     if (userModel.accountID != self.fakeUser.accountID) {
                         self.userList.append(userModel)
