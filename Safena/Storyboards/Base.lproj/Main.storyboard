@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14113" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="sJi-q4-f5R">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14313.13.2" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="sJi-q4-f5R">
     <device id="retina5_9" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14283.9"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -13,14 +13,13 @@
         <!--Notify View Controller-->
         <scene sceneID="EK4-fv-ldo">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="gS9-tk-E9G" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <viewController id="uxA-dE-nuB" userLabel="Notify View Controller" customClass="NotifyViewController" customModule="Safena" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="rOF-2l-VUD">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="pI9-oM-BDF">
-                                <rect key="frame" x="0.0" y="88" width="375" height="606"/>
+                                <rect key="frame" x="0.0" y="88" width="375" height="546"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="BystanderTableViewCell" id="Tov-Wf-AMB">
@@ -49,17 +48,24 @@
                                     <action selector="notifyButtonAction:" destination="uxA-dE-nuB" eventType="touchUpInside" id="IPx-31-qbg"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sd6-Zt-kgQ" customClass="FBSDKLoginButton">
+                                <rect key="frame" x="16" y="659" width="343" height="30"/>
+                                <state key="normal" title="Button"/>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
+                            <constraint firstItem="Vz7-IQ-WQJ" firstAttribute="top" secondItem="sd6-Zt-kgQ" secondAttribute="bottom" constant="25" id="0yB-sg-VJp"/>
+                            <constraint firstItem="5qq-Vd-3HG" firstAttribute="trailing" secondItem="sd6-Zt-kgQ" secondAttribute="trailing" constant="16" id="1Ar-Ed-ouC"/>
                             <constraint firstItem="5qq-Vd-3HG" firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="Vz7-IQ-WQJ" secondAttribute="trailing" id="21O-rm-Kr4"/>
                             <constraint firstItem="pI9-oM-BDF" firstAttribute="trailing" secondItem="5qq-Vd-3HG" secondAttribute="trailing" id="3x5-M5-f94"/>
                             <constraint firstItem="5qq-Vd-3HG" firstAttribute="bottom" secondItem="Vz7-IQ-WQJ" secondAttribute="bottom" constant="20" id="BRt-9k-yme"/>
-                            <constraint firstItem="Vz7-IQ-WQJ" firstAttribute="top" secondItem="pI9-oM-BDF" secondAttribute="bottom" constant="20" id="VoU-S7-p8G"/>
+                            <constraint firstItem="sd6-Zt-kgQ" firstAttribute="top" secondItem="pI9-oM-BDF" secondAttribute="bottom" constant="25" id="G90-Bm-hx3"/>
                             <constraint firstItem="pI9-oM-BDF" firstAttribute="leading" secondItem="5qq-Vd-3HG" secondAttribute="leading" id="Wye-8z-90a"/>
                             <constraint firstItem="Vz7-IQ-WQJ" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="5qq-Vd-3HG" secondAttribute="leading" id="XmT-ID-cxP"/>
                             <constraint firstItem="pI9-oM-BDF" firstAttribute="top" secondItem="5qq-Vd-3HG" secondAttribute="top" id="byg-FP-pv9"/>
                             <constraint firstItem="Vz7-IQ-WQJ" firstAttribute="leading" secondItem="5qq-Vd-3HG" secondAttribute="leading" id="fRZ-PO-DdT"/>
+                            <constraint firstItem="sd6-Zt-kgQ" firstAttribute="leading" secondItem="5qq-Vd-3HG" secondAttribute="leading" constant="16" id="gNG-vz-mYH"/>
                             <constraint firstItem="Vz7-IQ-WQJ" firstAttribute="centerX" secondItem="rOF-2l-VUD" secondAttribute="centerX" id="pts-Ol-JM6"/>
                             <constraint firstItem="5qq-Vd-3HG" firstAttribute="trailing" secondItem="Vz7-IQ-WQJ" secondAttribute="trailing" id="x4c-zv-lea"/>
                         </constraints>
@@ -68,9 +74,11 @@
                     <navigationItem key="navigationItem" title="Notify" id="M8y-Ov-dGO"/>
                     <connections>
                         <outlet property="bystanderTableView" destination="pI9-oM-BDF" id="ebw-LQ-58O"/>
+                        <outlet property="facebookLoginButton" destination="sd6-Zt-kgQ" id="QzI-r3-fgX"/>
                         <outlet property="notifyButtonOutlet" destination="Vz7-IQ-WQJ" id="xxJ-ZG-8Lb"/>
                     </connections>
                 </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="gS9-tk-E9G" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1885.5999999999999" y="691.62561576354688"/>
         </scene>

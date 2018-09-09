@@ -2,6 +2,23 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>fbauth2</string>
+	</array>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>fb364326194106290</string>
+			</array>
+		</dict>
+	</array>
+	<key>FacebookDisplayName</key>
+	<string>Safena</string>
+	<key>FacebookAppID</key>
+	<string>364326194106290</string>
 	<key>LSApplicationCategoryType</key>
 	<string></string>
 	<key>CFBundleDevelopmentRegion</key>
@@ -29,6 +46,8 @@
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>Safena needs to know where you are.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Safena needs to know where you are.</string>
+	<key>NSLocationUsageDescription</key>
 	<string>Safena needs to know where you are.</string>
 	<key>UIBackgroundModes</key>
 	<array>

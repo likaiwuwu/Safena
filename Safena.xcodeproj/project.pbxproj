@@ -34,6 +34,20 @@
 		4656854D213D600600B48B83 /* NotifyViewControllerDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4656854C213D600600B48B83 /* NotifyViewControllerDataSource.swift */; };
 		4656854E213D600600B48B83 /* NotifyViewControllerDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4656854C213D600600B48B83 /* NotifyViewControllerDataSource.swift */; };
 		4656854F213D600600B48B83 /* NotifyViewControllerDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4656854C213D600600B48B83 /* NotifyViewControllerDataSource.swift */; };
+		4686901521458DD40012EBB7 /* NotifyViewControllerExtensionFBSDKLoginButtonDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4686901421458DD40012EBB7 /* NotifyViewControllerExtensionFBSDKLoginButtonDelegate.swift */; };
+		468690172145926C0012EBB7 /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 468690162145926C0012EBB7 /* FBSDKCoreKit.framework */; };
+		46869019214592700012EBB7 /* FBSDKLoginKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 46869018214592700012EBB7 /* FBSDKLoginKit.framework */; };
+		4686901B214592740012EBB7 /* FirebaseUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4686901A214592740012EBB7 /* FirebaseUI.framework */; };
+		4686901D214592770012EBB7 /* FirebaseAuth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4686901C214592770012EBB7 /* FirebaseAuth.framework */; };
+		4686901F2145927B0012EBB7 /* FirebaseDatabase.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4686901E2145927B0012EBB7 /* FirebaseDatabase.framework */; };
+		468690212145927F0012EBB7 /* FirebaseCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 468690202145927F0012EBB7 /* FirebaseCore.framework */; };
+		46869023214592820012EBB7 /* leveldb.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 46869022214592820012EBB7 /* leveldb.framework */; };
+		46869025214592850012EBB7 /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 46869024214592850012EBB7 /* Bolts.framework */; };
+		468690272145928C0012EBB7 /* GoogleUtilities.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 468690262145928C0012EBB7 /* GoogleUtilities.framework */; };
+		46869029214592970012EBB7 /* GTMSessionFetcher.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 46869028214592970012EBB7 /* GTMSessionFetcher.framework */; };
+		4686902B2145929A0012EBB7 /* nanopb.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4686902A2145929A0012EBB7 /* nanopb.framework */; };
+		4686902D2145929C0012EBB7 /* Pods_SafenaTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4686902C2145929C0012EBB7 /* Pods_SafenaTests.framework */; };
+		4686902F2145929F0012EBB7 /* Pods_SafenaUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4686902E2145929F0012EBB7 /* Pods_SafenaUITests.framework */; };
 		46BA993121356296004034D5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46BA993021356296004034D5 /* AppDelegate.swift */; };
 		46BA993621356296004034D5 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 46BA993421356296004034D5 /* Main.storyboard */; };
 		46BA993821356297004034D5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 46BA993721356297004034D5 /* Assets.xcassets */; };
@@ -56,6 +70,8 @@
 		46DA8A11214436740039CD38 /* Globals.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46DA8A0F214436740039CD38 /* Globals.swift */; };
 		46DA8A12214436740039CD38 /* Globals.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46DA8A0F214436740039CD38 /* Globals.swift */; };
 		74C6D0F590E21C29F0F63B03 /* Pods_SafenaUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3CD6F56378245980B601353E /* Pods_SafenaUITests.framework */; };
+		D0C83BF96CF5651CA6A7E031 /* Pods_SafenaUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4686902E2145929F0012EBB7 /* Pods_SafenaUITests.framework */; };
+		ED4D08743015E20FB8B581E3 /* Pods_SafenaTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4686902C2145929C0012EBB7 /* Pods_SafenaTests.framework */; };
 		ED8C4CC432FD21DC15CD3440 /* Pods_SafenaTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B5B4B3F2C0320C6D450ACC9E /* Pods_SafenaTests.framework */; };
 /* End PBXBuildFile section */
 
@@ -90,6 +106,20 @@
 		46568544213D5FB600B48B83 /* NotifyViewControllerExtensionRandomCoordinates.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotifyViewControllerExtensionRandomCoordinates.swift; sourceTree = "<group>"; };
 		46568548213D5FF900B48B83 /* NotifyViewControllerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotifyViewControllerDelegate.swift; sourceTree = "<group>"; };
 		4656854C213D600600B48B83 /* NotifyViewControllerDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotifyViewControllerDataSource.swift; sourceTree = "<group>"; };
+		4686901421458DD40012EBB7 /* NotifyViewControllerExtensionFBSDKLoginButtonDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotifyViewControllerExtensionFBSDKLoginButtonDelegate.swift; sourceTree = "<group>"; };
+		468690162145926C0012EBB7 /* FBSDKCoreKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = FBSDKCoreKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		46869018214592700012EBB7 /* FBSDKLoginKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = FBSDKLoginKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		4686901A214592740012EBB7 /* FirebaseUI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = FirebaseUI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		4686901C214592770012EBB7 /* FirebaseAuth.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = FirebaseAuth.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		4686901E2145927B0012EBB7 /* FirebaseDatabase.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = FirebaseDatabase.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		468690202145927F0012EBB7 /* FirebaseCore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = FirebaseCore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		46869022214592820012EBB7 /* leveldb.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = leveldb.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		46869024214592850012EBB7 /* Bolts.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Bolts.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		468690262145928C0012EBB7 /* GoogleUtilities.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = GoogleUtilities.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		46869028214592970012EBB7 /* GTMSessionFetcher.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = GTMSessionFetcher.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		4686902A2145929A0012EBB7 /* nanopb.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = nanopb.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		4686902C2145929C0012EBB7 /* Pods_SafenaTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Pods_SafenaTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		4686902E2145929F0012EBB7 /* Pods_SafenaUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Pods_SafenaUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		46BA992D21356296004034D5 /* Safena.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Safena.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		46BA993021356296004034D5 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		46BA993521356296004034D5 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -121,6 +151,19 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4686902F2145929F0012EBB7 /* Pods_SafenaUITests.framework in Frameworks */,
+				4686902D2145929C0012EBB7 /* Pods_SafenaTests.framework in Frameworks */,
+				4686902B2145929A0012EBB7 /* nanopb.framework in Frameworks */,
+				46869029214592970012EBB7 /* GTMSessionFetcher.framework in Frameworks */,
+				468690272145928C0012EBB7 /* GoogleUtilities.framework in Frameworks */,
+				46869025214592850012EBB7 /* Bolts.framework in Frameworks */,
+				46869023214592820012EBB7 /* leveldb.framework in Frameworks */,
+				468690212145927F0012EBB7 /* FirebaseCore.framework in Frameworks */,
+				4686901F2145927B0012EBB7 /* FirebaseDatabase.framework in Frameworks */,
+				4686901D214592770012EBB7 /* FirebaseAuth.framework in Frameworks */,
+				4686901B214592740012EBB7 /* FirebaseUI.framework in Frameworks */,
+				46869019214592700012EBB7 /* FBSDKLoginKit.framework in Frameworks */,
+				468690172145926C0012EBB7 /* FBSDKCoreKit.framework in Frameworks */,
 				46568525213AD50300B48B83 /* CoreLocation.framework in Frameworks */,
 				46568523213AD4FC00B48B83 /* CoreBluetooth.framework in Frameworks */,
 				13EEFE78E12010A884B86F47 /* Pods_Safena.framework in Frameworks */,
@@ -132,6 +175,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				ED8C4CC432FD21DC15CD3440 /* Pods_SafenaTests.framework in Frameworks */,
+				ED4D08743015E20FB8B581E3 /* Pods_SafenaTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -140,6 +184,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				74C6D0F590E21C29F0F63B03 /* Pods_SafenaUITests.framework in Frameworks */,
+				D0C83BF96CF5651CA6A7E031 /* Pods_SafenaUITests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -269,6 +314,7 @@
 			children = (
 				46DA89F22140F0790039CD38 /* NotifyViewControllerExtensionLocationManagerDelegate.swift */,
 				46DA8A07214415E80039CD38 /* NotifyViewControllerExtensionPeripheralManagerDelegate.swift */,
+				4686901421458DD40012EBB7 /* NotifyViewControllerExtensionFBSDKLoginButtonDelegate.swift */,
 			);
 			path = NVCEDelegates;
 			sourceTree = "<group>";
@@ -276,6 +322,19 @@
 		8F3E27C5734DA6780F979649 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				4686902E2145929F0012EBB7 /* Pods_SafenaUITests.framework */,
+				4686902C2145929C0012EBB7 /* Pods_SafenaTests.framework */,
+				4686902A2145929A0012EBB7 /* nanopb.framework */,
+				46869028214592970012EBB7 /* GTMSessionFetcher.framework */,
+				468690262145928C0012EBB7 /* GoogleUtilities.framework */,
+				46869024214592850012EBB7 /* Bolts.framework */,
+				46869022214592820012EBB7 /* leveldb.framework */,
+				468690202145927F0012EBB7 /* FirebaseCore.framework */,
+				4686901E2145927B0012EBB7 /* FirebaseDatabase.framework */,
+				4686901C214592770012EBB7 /* FirebaseAuth.framework */,
+				4686901A214592740012EBB7 /* FirebaseUI.framework */,
+				46869018214592700012EBB7 /* FBSDKLoginKit.framework */,
+				468690162145926C0012EBB7 /* FBSDKCoreKit.framework */,
 				46568524213AD50300B48B83 /* CoreLocation.framework */,
 				46568522213AD4FC00B48B83 /* CoreBluetooth.framework */,
 				7D756C0B9F3C41B0B0FAB742 /* Pods_Safena.framework */,
@@ -297,6 +356,7 @@
 				46BA992A21356296004034D5 /* Frameworks */,
 				46BA992B21356296004034D5 /* Resources */,
 				802C0D680AE8F5ACA2EB9DBD /* [CP] Embed Pods Frameworks */,
+				404840FAFD83A38165B869A2 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -363,6 +423,9 @@
 								enabled = 0;
 							};
 							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+							com.apple.Keychain = {
 								enabled = 1;
 							};
 							com.apple.Maps.iOS = {
@@ -442,6 +505,30 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		404840FAFD83A38165B869A2 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-Safena/Pods-Safena-resources.sh",
+				"${PODS_CONFIGURATION_BUILD_DIR}/FirebaseUI/FirebaseAuthUI.bundle",
+				"${PODS_CONFIGURATION_BUILD_DIR}/FirebaseUI/FirebaseFacebookAuthUI.bundle",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FirebaseAuthUI.bundle",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FirebaseFacebookAuthUI.bundle",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Safena/Pods-Safena-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		5AB1D1A4D54390B52AE4504F /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -485,12 +572,22 @@
 			);
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-Safena/Pods-Safena-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/Bolts/Bolts.framework",
+				"${BUILT_PRODUCTS_DIR}/FBSDKCoreKit/FBSDKCoreKit.framework",
+				"${BUILT_PRODUCTS_DIR}/FBSDKLoginKit/FBSDKLoginKit.framework",
+				"${BUILT_PRODUCTS_DIR}/FBSDKShareKit/FBSDKShareKit.framework",
+				"${BUILT_PRODUCTS_DIR}/GTMSessionFetcher/GTMSessionFetcher.framework",
 				"${BUILT_PRODUCTS_DIR}/GoogleUtilities/GoogleUtilities.framework",
 				"${BUILT_PRODUCTS_DIR}/leveldb-library/leveldb.framework",
 				"${BUILT_PRODUCTS_DIR}/nanopb/nanopb.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Bolts.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FBSDKCoreKit.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FBSDKLoginKit.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FBSDKShareKit.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GTMSessionFetcher.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleUtilities.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/leveldb.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/nanopb.framework",
@@ -528,6 +625,7 @@
 				46568528213BD88A00B48B83 /* BystanderTableViewCell.swift in Sources */,
 				46DA89FB214394050039CD38 /* NotifyUUIDModel.swift in Sources */,
 				46568545213D5FB600B48B83 /* NotifyViewControllerExtensionRandomCoordinates.swift in Sources */,
+				4686901521458DD40012EBB7 /* NotifyViewControllerExtensionFBSDKLoginButtonDelegate.swift in Sources */,
 				4656854D213D600600B48B83 /* NotifyViewControllerDataSource.swift in Sources */,
 				46568549213D5FF900B48B83 /* NotifyViewControllerDelegate.swift in Sources */,
 				4656853C213D116000B48B83 /* NotifyNameModel.swift in Sources */,

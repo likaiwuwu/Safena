@@ -8,7 +8,10 @@ target 'Safena' do
   # Pods for Safena
   pod 'Firebase/Core'
   pod 'Firebase/Database'
-
+  pod 'FirebaseUI/Facebook'
+  pod 'FBSDKLoginKit'
+  pod 'FBSDKCoreKit'
+  pod 'FBSDKShareKit'
 
   target 'SafenaTests' do
     inherit! :search_paths
