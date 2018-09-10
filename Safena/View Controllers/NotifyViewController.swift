@@ -34,7 +34,7 @@ class NotifyViewController: UIViewController {
     
     @IBOutlet weak var notifyButtonOutlet: UIButton!
     @IBOutlet weak var bystanderTableView: UITableView!
-
+    
     //MARK:- Actions
     
     @IBAction func notifyButtonAction(_ sender: UIButton) {
@@ -56,13 +56,17 @@ class NotifyViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let splitName = Auth.auth().currentUser?.displayName?.split(separator: " ")
+        locationManager.delegate = self
+        peripheralManager.delegate = self
+        
+        let accountID = Auth.auth().currentUser?.uid
+        let name = Auth.auth().currentUser?.displayName
+        let splitName = name?.split(separator: " ")
         let firstName = String(splitName?[0] ?? "N/A")
         let lastName = String(splitName?[1] ?? "N/A")
-                
-        fakeUser = NotifyUserModel(accountID: refUsers.childByAutoId().key, name: NotifyNameModel(firstName: firstName, lastName: lastName), location: locationManager.location!, uuid: NotifyUUIDModel())
+        fakeUser = NotifyUserModel(accountID: accountID!, name: NotifyNameModel(firstName: firstName, lastName: lastName), location: locationManager.location!, uuid: NotifyUUIDModel())
         fakeUser.postAsUserOnFRD()
-                
+        
         // TableView
         bystanderTableView.delegate = self
         bystanderTableView.dataSource = self
@@ -77,8 +81,6 @@ class NotifyViewController: UIViewController {
         bystanderTableView.register(cellNib, forCellReuseIdentifier: "BystanderTableViewCell")
         
         // Managers
-        locationManager.delegate = self
-        peripheralManager.delegate = self
         
         // Location Manager Configurations
         self.locationManager.requestAlwaysAuthorization()
@@ -110,16 +112,16 @@ class NotifyViewController: UIViewController {
         UIView.animate(withDuration: 0.8) { [unowned self] in
             switch distance {
             case .unknown:
-                self.view.backgroundColor = UIColor.gray
+                self.view.backgroundColor = UIColor.init(hex: 0x9698e8)
                 printt("UNKNOWN")
             case .far:
-                self.view.backgroundColor = UIColor.blue
+                self.view.backgroundColor = UIColor.init(hex: 0x6c6fdf)
                 printt("FAR")
             case .near:
-                self.view.backgroundColor = UIColor.orange
+                self.view.backgroundColor = UIColor.init(hex: 0x4246d6)
                 printt("NEAR")
             case .immediate:
-                self.view.backgroundColor = UIColor.red
+                self.view.backgroundColor = UIColor.init(hex: 0x292cbd)
                 printt("IMMEDIATE")
             }
         }
@@ -181,7 +183,7 @@ class NotifyViewController: UIViewController {
         let peripheralData = region.peripheralData(withMeasuredPower: nil)
         peripheralManager.startAdvertising(((peripheralData as NSDictionary) as! [String : Any]))
     }
-        
+    
     //MARK:- Firebase Realtime Database
     
     // Observes the victim uuid from the user's Firebase Realtime Database. When a change is observed,

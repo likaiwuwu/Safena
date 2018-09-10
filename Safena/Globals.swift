@@ -52,3 +52,14 @@ enum FRDKeys {
     static let ToUUIDVictim = "Notify UUID Model/Victim UUID"
     static let ToUUIDPreviousVictim = "Notify UUID Model/Previous Victim UUID"
 }
+
+extension UIColor {    
+    convenience init(hex: Int, a: CGFloat = 1.0) {
+        self.init(
+            red: CGFloat((hex >> 16) & 0xFF),
+            green: CGFloat((hex >> 8) & 0xFF),
+            blue: CGFloat(hex & 0xFF),
+            alpha: a
+        )
+    }
+}

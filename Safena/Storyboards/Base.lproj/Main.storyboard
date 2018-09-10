@@ -44,6 +44,12 @@
                                 <state key="normal" title="Notify">
                                     <color key="titleColor" red="0.99999600649999998" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 </state>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                        <integer key="value" value="10"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="boolean" keyPath="clipsToBounds" value="YES"/>
+                                </userDefinedRuntimeAttributes>
                                 <connections>
                                     <action selector="notifyButtonAction:" destination="uxA-dE-nuB" eventType="touchUpInside" id="IPx-31-qbg"/>
                                 </connections>
@@ -89,7 +95,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="TS6-0s-c02" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1308" y="692"/>
+            <point key="canvasLocation" x="1383" y="692"/>
         </scene>
         <!--Login View Controller-->
         <scene sceneID="7Pd-yf-uRw">
@@ -109,7 +115,7 @@
                                 <rect key="frame" x="67" y="144" width="240" height="120"/>
                             </imageView>
                         </subviews>
-                        <color key="backgroundColor" red="0.61503171920776367" green="0.62294620275497437" blue="0.91951078176498413" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <color key="backgroundColor" red="0.61568627450980395" green="0.62352941176470589" blue="0.91764705882352937" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <color key="tintColor" red="0.097579412162303925" green="0.067568741738796234" blue="0.27396228909492493" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="YAI-SJ-LAe" firstAttribute="leading" secondItem="6ku-Qk-mB7" secondAttribute="leading" constant="20" id="2Qx-x7-h0C"/>

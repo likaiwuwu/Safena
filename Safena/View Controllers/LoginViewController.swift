@@ -46,8 +46,6 @@ class LoginViewController: UIViewController, FBSDKLoginButtonDelegate {
     
     @IBOutlet weak var facebookLoginButton: FBSDKLoginButton!
     
-    let loginButton = FBSDKLoginButton()
-
     override func viewDidLoad() {
         super.viewDidLoad()
         do {
@@ -60,39 +58,10 @@ class LoginViewController: UIViewController, FBSDKLoginButtonDelegate {
                 self.performSegue(withIdentifier: "LoginToNotify", sender: nil)
             }
         }
-
+        let loginButton = FBSDKLoginButton()
         loginButton.delegate = self
         loginButton.readPermissions = ["email"]
         loginButton.center = CGPoint(x: view.center.x, y: view.center.y + 100)
         view.addSubview(loginButton)
-
-        // Do any additional setup after loading the view.
     }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        do {
-            try Auth.auth().signOut()
-        } catch let signOutError as NSError {
-            print ("Error signing out: %@", signOutError)
-        }
-
-    }
-    
-    override func viewWillLayoutSubviews() {
-//        let leftHorizontalConstraint = loginButton.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 10)
-//        let rightHorizontalConstraint = loginButton.rightAnchor.constraint(equalTo: view.rightAnchor, constant: 10)
-//        view.addConstraints([leftHorizontalConstraint, rightHorizontalConstraint])
-    }
-    
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
 }
