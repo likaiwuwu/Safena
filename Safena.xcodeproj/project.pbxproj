@@ -34,7 +34,6 @@
 		4656854D213D600600B48B83 /* NotifyViewControllerDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4656854C213D600600B48B83 /* NotifyViewControllerDataSource.swift */; };
 		4656854E213D600600B48B83 /* NotifyViewControllerDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4656854C213D600600B48B83 /* NotifyViewControllerDataSource.swift */; };
 		4656854F213D600600B48B83 /* NotifyViewControllerDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4656854C213D600600B48B83 /* NotifyViewControllerDataSource.swift */; };
-		4686901521458DD40012EBB7 /* NotifyViewControllerExtensionFBSDKLoginButtonDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4686901421458DD40012EBB7 /* NotifyViewControllerExtensionFBSDKLoginButtonDelegate.swift */; };
 		468690172145926C0012EBB7 /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 468690162145926C0012EBB7 /* FBSDKCoreKit.framework */; };
 		46869019214592700012EBB7 /* FBSDKLoginKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 46869018214592700012EBB7 /* FBSDKLoginKit.framework */; };
 		4686901B214592740012EBB7 /* FirebaseUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4686901A214592740012EBB7 /* FirebaseUI.framework */; };
@@ -48,6 +47,9 @@
 		4686902B2145929A0012EBB7 /* nanopb.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4686902A2145929A0012EBB7 /* nanopb.framework */; };
 		4686902D2145929C0012EBB7 /* Pods_SafenaTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4686902C2145929C0012EBB7 /* Pods_SafenaTests.framework */; };
 		4686902F2145929F0012EBB7 /* Pods_SafenaUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4686902E2145929F0012EBB7 /* Pods_SafenaUITests.framework */; };
+		4686903121467DAE0012EBB7 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4686903021467DAE0012EBB7 /* LoginViewController.swift */; };
+		4686903221467DAE0012EBB7 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4686903021467DAE0012EBB7 /* LoginViewController.swift */; };
+		4686903321467DAE0012EBB7 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4686903021467DAE0012EBB7 /* LoginViewController.swift */; };
 		46BA993121356296004034D5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46BA993021356296004034D5 /* AppDelegate.swift */; };
 		46BA993621356296004034D5 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 46BA993421356296004034D5 /* Main.storyboard */; };
 		46BA993821356297004034D5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 46BA993721356297004034D5 /* Assets.xcassets */; };
@@ -106,7 +108,6 @@
 		46568544213D5FB600B48B83 /* NotifyViewControllerExtensionRandomCoordinates.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotifyViewControllerExtensionRandomCoordinates.swift; sourceTree = "<group>"; };
 		46568548213D5FF900B48B83 /* NotifyViewControllerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotifyViewControllerDelegate.swift; sourceTree = "<group>"; };
 		4656854C213D600600B48B83 /* NotifyViewControllerDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotifyViewControllerDataSource.swift; sourceTree = "<group>"; };
-		4686901421458DD40012EBB7 /* NotifyViewControllerExtensionFBSDKLoginButtonDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotifyViewControllerExtensionFBSDKLoginButtonDelegate.swift; sourceTree = "<group>"; };
 		468690162145926C0012EBB7 /* FBSDKCoreKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = FBSDKCoreKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		46869018214592700012EBB7 /* FBSDKLoginKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = FBSDKLoginKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4686901A214592740012EBB7 /* FirebaseUI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = FirebaseUI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -120,6 +121,7 @@
 		4686902A2145929A0012EBB7 /* nanopb.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = nanopb.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4686902C2145929C0012EBB7 /* Pods_SafenaTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Pods_SafenaTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4686902E2145929F0012EBB7 /* Pods_SafenaUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Pods_SafenaUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		4686903021467DAE0012EBB7 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		46BA992D21356296004034D5 /* Safena.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Safena.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		46BA993021356296004034D5 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		46BA993521356296004034D5 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -212,6 +214,7 @@
 				46568548213D5FF900B48B83 /* NotifyViewControllerDelegate.swift */,
 				4656854C213D600600B48B83 /* NotifyViewControllerDataSource.swift */,
 				46DA8A06214411210039CD38 /* NVCEDelegates */,
+				4686903021467DAE0012EBB7 /* LoginViewController.swift */,
 			);
 			path = "View Controllers";
 			sourceTree = "<group>";
@@ -314,7 +317,6 @@
 			children = (
 				46DA89F22140F0790039CD38 /* NotifyViewControllerExtensionLocationManagerDelegate.swift */,
 				46DA8A07214415E80039CD38 /* NotifyViewControllerExtensionPeripheralManagerDelegate.swift */,
-				4686901421458DD40012EBB7 /* NotifyViewControllerExtensionFBSDKLoginButtonDelegate.swift */,
 			);
 			path = NVCEDelegates;
 			sourceTree = "<group>";
@@ -622,10 +624,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4686903121467DAE0012EBB7 /* LoginViewController.swift in Sources */,
 				46568528213BD88A00B48B83 /* BystanderTableViewCell.swift in Sources */,
 				46DA89FB214394050039CD38 /* NotifyUUIDModel.swift in Sources */,
 				46568545213D5FB600B48B83 /* NotifyViewControllerExtensionRandomCoordinates.swift in Sources */,
-				4686901521458DD40012EBB7 /* NotifyViewControllerExtensionFBSDKLoginButtonDelegate.swift in Sources */,
 				4656854D213D600600B48B83 /* NotifyViewControllerDataSource.swift in Sources */,
 				46568549213D5FF900B48B83 /* NotifyViewControllerDelegate.swift in Sources */,
 				4656853C213D116000B48B83 /* NotifyNameModel.swift in Sources */,
@@ -653,6 +655,7 @@
 				46DA8A11214436740039CD38 /* Globals.swift in Sources */,
 				4656851F213ABEBC00B48B83 /* NotifyViewController.swift in Sources */,
 				46DA89F42140F0790039CD38 /* NotifyViewControllerExtensionLocationManagerDelegate.swift in Sources */,
+				4686903221467DAE0012EBB7 /* LoginViewController.swift in Sources */,
 				46DA8A09214415E80039CD38 /* NotifyViewControllerExtensionPeripheralManagerDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -672,6 +675,7 @@
 				46DA8A12214436740039CD38 /* Globals.swift in Sources */,
 				46568520213ABEBC00B48B83 /* NotifyViewController.swift in Sources */,
 				46DA89F52140F0790039CD38 /* NotifyViewControllerExtensionLocationManagerDelegate.swift in Sources */,
+				4686903321467DAE0012EBB7 /* LoginViewController.swift in Sources */,
 				46DA8A0A214415E80039CD38 /* NotifyViewControllerExtensionPeripheralManagerDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

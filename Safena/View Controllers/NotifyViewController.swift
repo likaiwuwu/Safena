@@ -12,6 +12,7 @@ import CoreLocation
 import CoreBluetooth
 import FBSDKLoginKit
 import FBSDKCoreKit
+import Firebase
 
 class NotifyViewController: UIViewController {
     
@@ -33,7 +34,6 @@ class NotifyViewController: UIViewController {
     
     @IBOutlet weak var notifyButtonOutlet: UIButton!
     @IBOutlet weak var bystanderTableView: UITableView!
-    @IBOutlet weak var facebookLoginButton: FBSDKLoginButton!
 
     //MARK:- Actions
     
@@ -56,10 +56,11 @@ class NotifyViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        facebookLoginButton.delegate = (self as! FBSDKLoginButtonDelegate)
-        facebookLoginButton.readPermissions = ["email"]
-        
-        fakeUser = NotifyUserModel(accountID: refUsers.childByAutoId().key, name: NotifyNameModel(firstName: "Self-Li-Kai", lastName: "Self-Wu"), location: locationManager.location!, uuid: NotifyUUIDModel())
+        let splitName = Auth.auth().currentUser?.displayName?.split(separator: " ")
+        let firstName = String(splitName?[0] ?? "N/A")
+        let lastName = String(splitName?[1] ?? "N/A")
+                
+        fakeUser = NotifyUserModel(accountID: refUsers.childByAutoId().key, name: NotifyNameModel(firstName: firstName, lastName: lastName), location: locationManager.location!, uuid: NotifyUUIDModel())
         fakeUser.postAsUserOnFRD()
                 
         // TableView
