@@ -29,6 +29,9 @@ class NotifyViewController: UIViewController {
         }
     }
     var fakeUser = NotifyUserModel()
+    var temporaryUser: NotifyUserModel!
+    var decision: Bool!
+
     
     //MARK:- Outlets
     
@@ -56,6 +59,7 @@ class NotifyViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        // Managers
         locationManager.delegate = self
         peripheralManager.delegate = self
         
@@ -80,14 +84,14 @@ class NotifyViewController: UIViewController {
         let cellNib = UINib(nibName: "BystanderTableViewCell", bundle: nil)
         bystanderTableView.register(cellNib, forCellReuseIdentifier: "BystanderTableViewCell")
         
-        // Managers
-        
         // Location Manager Configurations
         self.locationManager.requestAlwaysAuthorization()
         if CLLocationManager.locationServicesEnabled() {
-            configureLocationManager(desiredAccuracy: kCLLocationAccuracyBest, allowsBackgroundLocationUpdates: true, distanceFilter: 0.1)
             locationManager.startUpdatingLocation()
             locationManager.showsBackgroundLocationIndicator = true
+            locationManager.desiredAccuracy = kCLLocationAccuracyBest
+            locationManager.allowsBackgroundLocationUpdates = true
+            locationManager.distanceFilter = 0.1
         }
         
         // Firebase Realtime Database Configurations
@@ -99,49 +103,6 @@ class NotifyViewController: UIViewController {
         
     }
     
-    // Configures location manager settings.
-    func configureLocationManager(desiredAccuracy: CLLocationAccuracy, allowsBackgroundLocationUpdates: Bool, distanceFilter: CLLocationDistance) {
-        locationManager.desiredAccuracy = desiredAccuracy
-        locationManager.allowsBackgroundLocationUpdates = allowsBackgroundLocationUpdates
-        locationManager.distanceFilter = distanceFilter
-    }
-    
-    // Continuously logs distance to bystanders.
-    // Changes the color of the background to indicate nearby bystander presence.
-    func update(distance: CLProximity) {
-        UIView.animate(withDuration: 0.8) { [unowned self] in
-            switch distance {
-            case .unknown:
-                self.view.backgroundColor = UIColor.init(hex: 0x9698e8)
-                printt("UNKNOWN")
-            case .far:
-                self.view.backgroundColor = UIColor.init(hex: 0x6c6fdf)
-                printt("FAR")
-            case .near:
-                self.view.backgroundColor = UIColor.init(hex: 0x4246d6)
-                printt("NEAR")
-            case .immediate:
-                self.view.backgroundColor = UIColor.init(hex: 0x292cbd)
-                printt("IMMEDIATE")
-            }
-        }
-    }
-    
-    func peripheralManagerDidUpdateState(_ peripheral: CBPeripheralManager) {
-        switch (peripheral.state) {
-        case .poweredOn:
-            printt("peripheral.state is .poweredOn")
-            break;
-        case .poweredOff:
-            printt("peripheral.state is .poweredOff")
-            break;
-        case .unsupported:
-            printt("peripheral.state is .unsupported")
-            break;
-        default:
-            break;
-        }
-    }
     
     //Starts both monitoring and ranging for parameter user beacon.
     func startMonitoringAndRangingUser(user: NotifyUserModel) {
@@ -159,25 +120,6 @@ class NotifyViewController: UIViewController {
         locationManager.stopRangingBeacons(in: beaconRegion)
     }
     
-    //MARK:- iBeacon
-    
-    func centralManagerDidUpdateState(_ central: CBCentralManager) {
-        switch central.state {
-        case .unknown:
-            printt("central.state is .unknown")
-        case .resetting:
-            printt("central.state is .resetting")
-        case .unsupported:
-            printt("central.state is .unsupported")
-        case .unauthorized:
-            printt("central.state is .unauthorized")
-        case .poweredOff:
-            printt("central.state is .poweredOff")
-        case .poweredOn:
-            printt("central.state is .poweredOn")
-        }
-    }
-    
     // Begins advertising parameter CLBeaconRegion.
     func advertiseDevice(region : CLBeaconRegion) {
         let peripheralData = region.peripheralData(withMeasuredPower: nil)
@@ -192,6 +134,7 @@ class NotifyViewController: UIViewController {
         refUsers.child("\(fakeUser.accountID)/Notify UUID Model/Victim UUID").observe(.value) { (snapshot) in
             let victimUUIDString = snapshot.value as! String
             if (!victimUUIDString.isEmpty) {
+                guard self.askForConnectionOnIBeacon() == true else { return }
                 if let user = self.findUserFromUserList(uuid: victimUUIDString) {
                     self.fakeUser.updatePreviousVictimUUID(previousUUID: victimUUIDString)
                     self.startMonitoringAndRangingUser(user: user)
@@ -204,14 +147,41 @@ class NotifyViewController: UIViewController {
         }
     }
     
-    // Finds user object from userList.
-    func findUserFromUserList(uuid: String) -> NotifyUserModel? {
-        for user in userList {
-            if user.uuid.uuidString == uuid {
-                return user
-            }
+    func createUserFromFRD(accountID: String) -> NotifyUserModel? {
+        refUsers.child(accountID).observeSingleEvent(of: .value) { (snapshot) in
+            let userValues = snapshot.value as! [String: Any]
+            // Getting Account ID
+            let userAccountID = userValues[FRDKeys.AccountID] as! String
+            
+            // Getting Notify Name Model
+            let userName = userValues[FRDKeys.NotifyNameModel] as! [String: Any]
+            let userNameFirst = userName[FRDKeys.FirstName] as! String
+            let userNameLast = userName[FRDKeys.LastName] as! String
+            let name = NotifyNameModel(firstName: userNameFirst , lastName: userNameLast)
+            
+            // Getting Location
+            let userLocation = userValues[FRDKeys.Location] as! [String: Any]
+            let userCoordinate = userLocation[FRDKeys.Coordinate] as! [String: Any]
+            let userLatitude = userCoordinate[FRDKeys.Latitude] as! CLLocationDegrees
+            let userLongitude = userCoordinate[FRDKeys.Longitude] as! CLLocationDegrees
+            let location = CLLocation(latitude: userLatitude, longitude: userLongitude)
+            
+            let userUUID = userValues[FRDKeys.NotifyUUIDModel] as! [String: Any]
+            // Getting user UUID
+            let userUUIDUser = userUUID[FRDKeys.UUIDUser] as! String
+            // Getting user victim UUID
+            let userUUIDVictim = userUUID[FRDKeys.UUIDVictim] as! String
+            // Getting use previous victim UUID
+            let userUUIDPreviousVictim = userUUID[FRDKeys.UUIDPreviousVictim] as! String
+            let uuid = NotifyUUIDModel(uuid: userUUIDUser, uuidVictim: userUUIDVictim, uuidPreviousVictim: userUUIDPreviousVictim)
+            
+            // Getting is notifying
+            let userIsNotifying = userValues[FRDKeys.IsNotifying] as! Bool
+            
+            // Creating artist object with model and fetched values
+            self.temporaryUser = NotifyUserModel(accountID: userAccountID, name: name, location: location, uuid: uuid, isNotifying: userIsNotifying)
         }
-        return nil
+        return temporaryUser
     }
     
     // Observes users Firebase Realtime Database. When a change is observed,
@@ -261,5 +231,27 @@ class NotifyViewController: UIViewController {
                 }
             }
         })
+    }
+    
+    // Finds user object from userList.
+    func findUserFromUserList(uuid: String) -> NotifyUserModel? {
+        for user in userList {
+            if user.uuid.uuidString == uuid {
+                return user
+            }
+        }
+        return nil
+    }
+    
+    func askForConnectionOnIBeacon() -> Bool {
+        let alert = UIAlertController(title: "Request for Connection", message: "A nearby user is in danger! Agree to connect and share location information with the user?", preferredStyle: UIAlertController.Style.alert)
+        alert.addAction(UIAlertAction(title: "Connect", style: UIAlertAction.Style.default, handler: { action in
+            self.decision = true
+        }))
+        alert.addAction(UIAlertAction(title: "Reject", style: UIAlertAction.Style.cancel, handler: { action in
+            self.decision = false
+        }))
+        self.present(alert, animated: true, completion: nil)
+        return decision
     }
 }

@@ -37,7 +37,7 @@ class NotifyUserModel {
     }
     
     func asBeaconRegion() -> CLBeaconRegion {
-        return CLBeaconRegion(proximityUUID: UUID(uuidString: self.uuid.uuidString)!, major: 1, minor: 1, identifier: name.getFullName())
+        return CLBeaconRegion(proximityUUID: UUID(uuidString: self.uuid.uuidString)!, major: 1, minor: 1, identifier: accountID)
     }
     
     func postAsUserOnFRD() {
