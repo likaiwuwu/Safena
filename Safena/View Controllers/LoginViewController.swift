@@ -48,11 +48,6 @@ class LoginViewController: UIViewController, FBSDKLoginButtonDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        do {
-            try Auth.auth().signOut()
-        } catch let signOutError as NSError {
-            print ("Error signing out: %@", signOutError)
-        }
         if (Auth.auth().currentUser != nil) {
             DispatchQueue.main.async {
                 self.performSegue(withIdentifier: "LoginToNotify", sender: nil)
