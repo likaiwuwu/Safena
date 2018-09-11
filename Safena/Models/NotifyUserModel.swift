@@ -20,26 +20,19 @@ class NotifyUserModel {
     var name: NotifyNameModel
     // Location
     var location: CLLocation
-    // Coordinate
     // UUID
     var uuid: NotifyUUIDModel
     // Is Notifying
     var isNotifying: Bool
     // Beacon Region
     lazy var beaconRegion = self.asBeaconRegion()
-    // Monitoring Beacons
-    var monitoringBeacons: [Int:String]
-    // Ranging Beacons
-    var rangingBeacons: [Int:String]
     
-    init(accountID: String = "", name: NotifyNameModel = NotifyNameModel(), location: CLLocation = CLLocation(), uuid: NotifyUUIDModel = NotifyUUIDModel(), isNotifying: Bool = false, monitoringBeacons: [Int:String] = [Int:String](), rangingBeacons: [Int:String] = [Int:String]()) {
+    init(accountID: String = "", name: NotifyNameModel = NotifyNameModel(), location: CLLocation = CLLocation(), uuid: NotifyUUIDModel = NotifyUUIDModel(), isNotifying: Bool = false) {
         self.accountID = accountID
         self.name = name
         self.location = location
         self.uuid = uuid
         self.isNotifying = isNotifying
-        self.monitoringBeacons = monitoringBeacons
-        self.rangingBeacons = rangingBeacons
     }
     
     func asBeaconRegion() -> CLBeaconRegion {
@@ -51,10 +44,8 @@ class NotifyUserModel {
         let coordinate = [FRDKeys.Latitude: Int(self.location.coordinate.latitude), FRDKeys.Longitude: Int(self.location.coordinate.longitude)]
         let location = [FRDKeys.Coordinate: coordinate]
         let uuid = [FRDKeys.UUIDUser: self.uuid.uuidString,
-                    FRDKeys.UUIDVictim: self.uuid.uuidVictimString,
-                    FRDKeys.UUIDPreviousVictim: self.uuid.uuidPreviousVictimString,
-                    FRDKeys.MonitoringBeacons: self.monitoringBeacons,
-                    FRDKeys.RangingBeacons: self.rangingBeacons] as [String : Any]
+                    FRDKeys.MonitoringBeacons: self.uuid.monitoringBeacons,
+                    FRDKeys.RangingBeacons: self.uuid.rangingBeacons] as [String : Any]
         Database.database().reference().child(FRDKeys.Users).child(self.accountID).updateChildValues(
             [FRDKeys.AccountID: accountID,
              FRDKeys.NotifyNameModel: name,
@@ -67,19 +58,32 @@ class NotifyUserModel {
     
     // Public Updates
     
+    func updateNearbyUsersMonitoringBeaconsWithUUID(uuid: String) {
+        refUsers.observeSingleEvent(of: .value) { (snapshot) in
+            for user in snapshot.children {
+                let user1 = user as! DataSnapshot
+                let user2 = user1.value as! [String:Any]
+                let user3 = user2[FRDKeys.AccountID] as! String
+                if (user3 != self.accountID) {
+                    refUsers.child("\(user3)/\(FRDKeys.NotifyUUIDModel)/\(FRDKeys.MonitoringBeacons)").updateChildValues([String(uuid.hashValue):uuid])
+                }
+            }
+        }
+    }
+    
     func updateMonitoringAndRangingUsers(user: NotifyUserModel) {
         updateMonitoringUsers(user: user)
         updateRangingUsers(user: user)
     }
     
     func updateMonitoringUsers(user: NotifyUserModel) {
-        monitoringBeacons[user.uuid.uuidString.hashValue] = user.uuid.uuidString
-        updateSelfValue(key: FRDKeys.RangingBeacons, value: monitoringBeacons)
+        uuid.monitoringBeacons.updateValue(user.uuid.uuidString, forKey: user.uuid.uuidString.hashValue)
+        updateSelfValue(key: FRDKeys.ToMonitoringBeacons, value: uuid.monitoringBeacons)
     }
     
     func updateRangingUsers(user: NotifyUserModel) {
-        monitoringBeacons[user.uuid.uuidString.hashValue] = user.uuid.uuidString
-        updateSelfValue(key: FRDKeys.RangingBeacons, value: monitoringBeacons)
+        uuid.rangingBeacons.updateValue(user.uuid.uuidString, forKey: user.uuid.uuidString.hashValue)
+        updateSelfValue(key: FRDKeys.ToRangingBeacons, value: uuid.rangingBeacons)
     }
     
     func updateIsNotifying(isNotifying: Bool) {
@@ -102,16 +106,16 @@ class NotifyUserModel {
         updateSelfValue(key: FRDKeys.ToUUIDUser, value: self.uuid.uuidString)
     }
     
-    func updateVictimUUID(userList: [NotifyUserModel], victimUUIDString: String) {
-        userList.forEach { (user) in
-            updateValue(accountID: user.accountID, key: FRDKeys.ToUUIDVictim, value: victimUUIDString)
-        }
-    }
-    
-    func updatePreviousVictimUUID(previousUUID: String) {
-        self.uuid.uuidPreviousVictimString = previousUUID
-        updateSelfValue(key: FRDKeys.ToUUIDPreviousVictim, value: self.uuid.uuidPreviousVictimString)
-    }
+//    func updateVictimUUID(userList: [NotifyUserModel], victimUUIDString: String) {
+//        userList.forEach { (user) in
+//            updateValue(accountID: user.accountID, key: FRDKeys.ToUUIDVictim, value: victimUUIDString)
+//        }
+//    }
+//
+//    func updatePreviousVictimUUID(previousUUID: String) {
+//        self.uuid.uuidPreviousVictimString = previousUUID
+//        updateSelfValue(key: FRDKeys.ToUUIDPreviousVictim, value: self.uuid.uuidPreviousVictimString)
+//    }
     
     // Private Updates
     

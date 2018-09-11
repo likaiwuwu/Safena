@@ -15,14 +15,14 @@ import CoreBluetooth
 extension NotifyViewController: CLLocationManagerDelegate {
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        currentUser.updateLocationCoordinate(coordinate: locations[0].coordinate)
+        currentUser.updateLocationCoordinate(coordinate: locations.last!.coordinate)
     }
     
     func locationManager(_ manager: CLLocationManager, didStartMonitoringFor region: CLRegion) {
-        currentUser.updateMonitoringUsers(user: region.)
-        if let otherUser = createUserFromFRD(accountID: region.identifier) {
-            otherUser.updateMonitoringUsers(user: currentUser)
-        }
+//        currentUser.updateMonitoringUsers(user: region.)
+//        if let otherUser = createUserFromFRD(accountID: region.identifier) {
+//            otherUser.updateMonitoringUsers(user: currentUser)
+//        }
         printt("""
             MANAGER: \(manager.debugDescription)
             DID START MONITORING FOR REGION: \(region.debugDescription)

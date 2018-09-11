@@ -283,13 +283,13 @@
 				46BA995E213562C9004034D5 /* GoogleService-Info.plist */,
 				46BA993C21356297004034D5 /* Info.plist */,
 				46BA993021356296004034D5 /* AppDelegate.swift */,
+				46DA8A0F214436740039CD38 /* Globals.swift */,
 				46568521213ABED300B48B83 /* View Controllers */,
 				46BA993721356297004034D5 /* Assets.xcassets */,
 				46568530213BE7F000B48B83 /* Storyboards */,
 				4656852F213BE7DF00B48B83 /* Cells */,
 				4656852E213BDBBE00B48B83 /* Nibs */,
 				46568536213CF54200B48B83 /* Models */,
-				46DA8A0F214436740039CD38 /* Globals.swift */,
 			);
 			path = Safena;
 			sourceTree = "<group>";
