@@ -50,7 +50,7 @@ class NotifyUserModel {
              FRDKeys.NotifyNameModel: name,
              FRDKeys.Location: location,
              FRDKeys.isNotifying: isNotifying,
-             FRDKeys.NotifyUUIDModel: uuid,
+             FRDKeys.NotifyUUIDModel: uuid
             ]
         )
     }
@@ -99,13 +99,13 @@ class NotifyUserModel {
 //        }
 //    }
     
-    func addMonitoringAccountID(forAccountID accountID: String) {
+    func addMonitoringAndRangingBeaconsAccountID(forAccountID accountID: String) {
         uuid.monitoringRangingBeacons.updateValue(accountID, forKey: accountID)
         updateSelfValue(key: FRDKeys.ToMonitoringRangingBeacons, value: uuid.monitoringRangingBeacons)
     }
 
     
-    func removeMonitoringAccountID(forAccountID accountID: String) {
+    func removeMonitoringAndRangingBeaconsAccountID(forAccountID accountID: String) {
         uuid.monitoringRangingBeacons.removeValue(forKey: accountID)
         updateSelfValue(key: FRDKeys.ToMonitoringRangingBeacons, value: uuid.monitoringRangingBeacons)
     }

@@ -149,14 +149,14 @@ class NotifyViewController: UIViewController {
             if (self.currentUser.isNotifying == false) {
                 let alert = UIAlertController(title: "Request for Connection", message: "A nearby user is in danger! Agree to connect and share location information with the user?", preferredStyle: UIAlertController.Style.alert)
                 alert.addAction(UIAlertAction(title: "Connect", style: UIAlertAction.Style.default, handler: { action in
-                    user.addMonitoringAccountID(forAccountID: self.currentUser.accountID)
+                    user.addMonitoringAndRangingBeaconsAccountID(forAccountID: self.currentUser.accountID)
                     self.advertiseDevice(region: self.currentUser.asBeaconRegion())
                     self.locationManager.startMonitoring(for: user.asBeaconRegion())
                     self.locationManager.startRangingBeacons(in: user.asBeaconRegion())
                 }))
                 alert.addAction(UIAlertAction(title: "Reject", style: UIAlertAction.Style.default, handler: { action in
                     print("Rejected")
-                    self.currentUser.removeMonitoringAccountID(forAccountID: addedMonitoringBeaconAccountID)
+                    self.currentUser.removeMonitoringAndRangingBeaconsAccountID(forAccountID: addedMonitoringBeaconAccountID)
                 }))
                 self.present(alert, animated: true, completion: nil)
             } else {
@@ -195,6 +195,7 @@ class NotifyViewController: UIViewController {
             }
             if (self.currentUser.uuid.monitoringRangingBeacons.isEmpty) {
                 self.peripheralManager.stopAdvertising()
+                self.view.backgroundColor = UIColor.white
             }
             self.locationManager.stopMonitoring(for: user.asBeaconRegion())
             self.locationManager.stopRangingBeacons(in: user.asBeaconRegion())
