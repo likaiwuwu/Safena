@@ -19,10 +19,6 @@ extension NotifyViewController: CLLocationManagerDelegate {
     }
     
     func locationManager(_ manager: CLLocationManager, didStartMonitoringFor region: CLRegion) {
-        currentUser.addRangingAccountID(forAccountID: region.identifier)
-        if let user = findUserFromUserList(accountID: region.identifier) {
-            locationManager.startRangingBeacons(in: user.asBeaconRegion())
-        }
         printt("""
             MANAGER: \(manager.debugDescription)
             DID START MONITORING FOR REGION: \(region.debugDescription)

@@ -12,23 +12,18 @@ import UIKit
 class NotifyUUIDModel {
     
     var uuidString: String
-    // Monitoring Beacons
-    var monitoringBeacons: [String:String]
-    // Ranging Beacons
-    var rangingBeacons: [String:String]
+    // Monitoring/Ranging Beacons
+    var monitoringRangingBeacons: [String:String]
 
-    init (uuid: String = UUID().uuidString, monitoringBeacons: [String:String] = [String:String](), rangingBeacons: [String:String] = [String:String]()) {
+    init (uuid: String = UUID().uuidString, monitoringRangingBeacons: [String:String] = [String:String]()) {
         self.uuidString = uuid
-        // Monitoring Beacons
-        self.monitoringBeacons = monitoringBeacons
-        // Ranging Beacons
-        self.rangingBeacons = rangingBeacons
+        // Monitoring/Ranging Beacons
+        self.monitoringRangingBeacons = monitoringRangingBeacons
     }
     
     init () {
         self.uuidString = UUID().uuidString
-        self.monitoringBeacons = [String:String]()
-        self.rangingBeacons = [String:String]()
+        self.monitoringRangingBeacons = [String:String]()
     }
     
 }

@@ -40,9 +40,8 @@ enum FRDKeys {
     static let UUIDUser = "User UUID"
     static let UUIDVictim = "Victim UUID"
     static let UUIDPreviousVictim = "Previous Victim UUID"
-    static let IsNotifying = "Is Notifying"
-    static let MonitoringBeacons = "Monitoring Beacons"
-    static let RangingBeacons = "Ranging Beacons"
+    static let isNotifying = "Is Notifying"
+    static let MonitoringRangingBeacons = "Monitoring/Ranging Beacons"
     
     // Path to Child Key
     static let ToFirstName = "Notify Name ModelFirst Name"
@@ -53,8 +52,7 @@ enum FRDKeys {
     static let ToUUIDUser = "Notify UUID Model/User UUID"
     static let ToUUIDVictim = "Notify UUID Model/Victim UUID"
     static let ToUUIDPreviousVictim = "Notify UUID Model/Previous Victim UUID"
-    static let ToMonitoringBeacons = "Notify UUID Model/Monitoring Beacons"
-    static let ToRangingBeacons = "Notify UUID Model/Ranging Beacons"
+    static let ToMonitoringRangingBeacons = "Notify UUID Model/Monitoring/Ranging Beacons"
 }
 
 extension UIColor {    

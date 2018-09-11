@@ -27,10 +27,10 @@ extension NotifyViewController {
             let coordinate3 = CLLocationCoordinate2D(latitude: CLLocationDegrees(index), longitude: CLLocationDegrees(-index))
             let coordinate4 = CLLocationCoordinate2D(latitude: CLLocationDegrees(-index), longitude: CLLocationDegrees(index))
             
-            let user1 = NotifyUserModel(accountID: accountID1, name: NotifyNameModel(firstName: "Ashley", lastName: "Smoker"), location: CLLocation(latitude: coordinate1.latitude, longitude: coordinate1.longitude), isNotifying: false)
-            let user2 = NotifyUserModel(accountID: accountID2, name: NotifyNameModel(firstName: "Li-Chun", lastName: "Wu"), location: CLLocation(latitude: coordinate2.latitude, longitude: coordinate2.longitude), isNotifying: false)
-            let user3 = NotifyUserModel(accountID: accountID3, name: NotifyNameModel(firstName: "John", lastName: "Atanacio"), location: CLLocation(latitude: coordinate3.latitude, longitude: coordinate3.longitude), isNotifying: false)
-            let user4 = NotifyUserModel(accountID: accountID4, name: NotifyNameModel(firstName: "Edward", lastName: "Sweeney"), location: CLLocation(latitude: coordinate4.latitude, longitude: coordinate4.longitude), isNotifying: false)
+            let user1 = NotifyUserModel(accountID: accountID1, name: NotifyNameModel(firstName: "Ashley", lastName: "Smoker"), location: CLLocation(latitude: coordinate1.latitude, longitude: coordinate1.longitude), isOnline: false)
+            let user2 = NotifyUserModel(accountID: accountID2, name: NotifyNameModel(firstName: "Li-Chun", lastName: "Wu"), location: CLLocation(latitude: coordinate2.latitude, longitude: coordinate2.longitude), isOnline: false)
+            let user3 = NotifyUserModel(accountID: accountID3, name: NotifyNameModel(firstName: "John", lastName: "Atanacio"), location: CLLocation(latitude: coordinate3.latitude, longitude: coordinate3.longitude), isOnline: false)
+            let user4 = NotifyUserModel(accountID: accountID4, name: NotifyNameModel(firstName: "Edward", lastName: "Sweeney"), location: CLLocation(latitude: coordinate4.latitude, longitude: coordinate4.longitude), isOnline: false)
 
             user1.postAsUserOnFRD()
             user2.postAsUserOnFRD()

@@ -44,12 +44,17 @@ class NotifyViewController: UIViewController {
         if currentUser.isNotifying == false {
             advertiseDevice(region: currentUser.asBeaconRegion())
             currentUser.updateIsNotifying(isNotifying: true)
-            currentUser.addAccountIDToNearbyUsersMonitoringBeacons()
+            currentUser.addAccountIDToNearbyUsersMonitoringAndRangingBeacons()
         } else {
             peripheralManager.stopAdvertising()
             currentUser.updateIsNotifying(isNotifying: false)
-            currentUser.removeAccountIDToNearbyUsersMonitoringBeacons()
-            currentUser.removeAccountIDToNearbyUsersRangingBeacons()
+            currentUser.removeAccountIDToNearbyUsersMonitoringAndRangingBeacons()
+            for monitoringBeacon in currentUser.uuid.monitoringRangingBeacons {
+                if let user = findUserFromUserList(accountID: monitoringBeacon.key) {
+                    locationManager.stopMonitoring(for: user.asBeaconRegion())
+                    locationManager.stopRangingBeacons(in: user.asBeaconRegion())
+                }
+            }
         }
         sender.isSelected = currentUser.isNotifying
     }
@@ -76,12 +81,12 @@ class NotifyViewController: UIViewController {
             locationManager.distanceFilter = 0.1
         }
         
-//                let accountID = Auth.auth().currentUser?.uid
-//                let name = Auth.auth().currentUser?.displayName
-//                let splitName = name?.split(separator: " ")
-//                let firstName = String(splitName?[0] ?? "N/A")
-//                let lastName = String(splitName?[1] ?? "N/A")
-        currentUser = NotifyUserModel(accountID: refUsers.childByAutoId().key, name: NotifyNameModel(firstName: "Li-Kai", lastName: "Wu"), location: locationManager.location!, uuid: NotifyUUIDModel(), isNotifying: false)
+        //                let accountID = Auth.auth().currentUser?.uid
+        //                let name = Auth.auth().currentUser?.displayName
+        //                let splitName = name?.split(separator: " ")
+        //                let firstName = String(splitName?[0] ?? "N/A")
+        //                let lastName = String(splitName?[1] ?? "N/A")
+        currentUser = NotifyUserModel(accountID: refUsers.childByAutoId().key, name: NotifyNameModel(firstName: "Li-Kai", lastName: "Wu"), location: locationManager.location!, uuid: NotifyUUIDModel(), isOnline: false)
         currentUser.postAsUserOnFRD()
         
         // TableView
@@ -99,10 +104,8 @@ class NotifyViewController: UIViewController {
         
         // Firebase Realtime Database Configurations
         observeValueUserFromFRD()
-        observeAddedMonitoringBeacon()
-        observeAddedRangingBeacon()
+        observeAddedMonitoringRangingBeacons()
         observeRemovedMonitoringBeacon()
-        observeRemovedRangingBeacon()
         
         //DELETE LATER
         refUsers.child(currentUser.accountID).onDisconnectRemoveValue()
@@ -111,20 +114,20 @@ class NotifyViewController: UIViewController {
     
     
     //Starts both monitoring and ranging for parameter user beacon.
-//    func startMonitoringAndRangingUser(user: NotifyUserModel) {
-//        printt("Started Monitoring: \(user)")
-//        let beaconRegion = user.beaconRegion
-//        locationManager.startMonitoring(for: beaconRegion)
-//        locationManager.startRangingBeacons(in: beaconRegion)
-//    }
-//
-//    //Stops both monitoring and ranging for parameter user beacon.
-//    func stopMonitoringAndRangingUser(user: NotifyUserModel) {
-//        printt("Stopped Monitoring: \(user)")
-//        let beaconRegion = user.beaconRegion
-//        locationManager.stopMonitoring(for: beaconRegion)
-//        locationManager.stopRangingBeacons(in: beaconRegion)
-//    }
+    //    func startMonitoringAndRangingUser(user: NotifyUserModel) {
+    //        printt("Started Monitoring: \(user)")
+    //        let beaconRegion = user.beaconRegion
+    //        locationManager.startMonitoring(for: beaconRegion)
+    //        locationManager.startRangingBeacons(in: beaconRegion)
+    //    }
+    //
+    //    //Stops both monitoring and ranging for parameter user beacon.
+    //    func stopMonitoringAndRangingUser(user: NotifyUserModel) {
+    //        printt("Stopped Monitoring: \(user)")
+    //        let beaconRegion = user.beaconRegion
+    //        locationManager.stopMonitoring(for: beaconRegion)
+    //        locationManager.stopRangingBeacons(in: beaconRegion)
+    //    }
     
     // Begins advertising parameter CLBeaconRegion.
     func advertiseDevice(region : CLBeaconRegion) {
@@ -137,52 +140,78 @@ class NotifyViewController: UIViewController {
     
     // Observes the victim uuid from the user's Firebase Realtime Database. When a change is observed,
     // starts/stops monitoring/ranging and updates previous victim UUID, as well.
-    func observeAddedMonitoringBeacon() {
-        printt("observeAddedMonitoringBeacon")
-        refUsers.child("\(currentUser.accountID)/\(FRDKeys.NotifyUUIDModel)/\(FRDKeys.MonitoringBeacons)").observe(.childAdded) { (snapshot) in
+    func observeAddedMonitoringRangingBeacons() {
+        refUsers.child("\(currentUser.accountID)/\(FRDKeys.NotifyUUIDModel)/\(FRDKeys.MonitoringRangingBeacons)").observe(.childAdded) { (snapshot) in
             let addedMonitoringBeaconAccountID = snapshot.value as! String
-            if let user = self.findUserFromUserList(accountID: addedMonitoringBeaconAccountID) {
-                self.locationManager.startMonitoring(for: user.asBeaconRegion())
-            } else {
+            guard let user = self.findUserFromUserList(accountID: addedMonitoringBeaconAccountID) else {
                 printt("Unable to create NotifyUserModel from provided Account ID")
+                return }
+            if (self.currentUser.isNotifying == false) {
+                let alert = UIAlertController(title: "Request for Connection", message: "A nearby user is in danger! Agree to connect and share location information with the user?", preferredStyle: UIAlertController.Style.alert)
+                alert.addAction(UIAlertAction(title: "Connect", style: UIAlertAction.Style.default, handler: { action in
+                    user.addMonitoringAccountID(forAccountID: self.currentUser.accountID)
+                    self.advertiseDevice(region: self.currentUser.asBeaconRegion())
+                    self.locationManager.startMonitoring(for: user.asBeaconRegion())
+                    self.locationManager.startRangingBeacons(in: user.asBeaconRegion())
+                }))
+                alert.addAction(UIAlertAction(title: "Reject", style: UIAlertAction.Style.default, handler: { action in
+                    print("Rejected")
+                    self.currentUser.removeMonitoringAccountID(forAccountID: addedMonitoringBeaconAccountID)
+                }))
+                self.present(alert, animated: true, completion: nil)
+            } else {
+                self.locationManager.startMonitoring(for: user.asBeaconRegion())
+                self.locationManager.startRangingBeacons(in: user.asBeaconRegion())
             }
         }
     }
     
-    func observeAddedRangingBeacon() {
-        printt("observeAddedRangingBeacon()")
-        refUsers.child("\(currentUser.accountID)/\(FRDKeys.NotifyUUIDModel)/\(FRDKeys.RangingBeacons)").observe(.childAdded) { (snapshot) in
-            let addedRangingBeaconAccountID = snapshot.value as! String
-            if let user = self.findUserFromUserList(accountID: addedRangingBeaconAccountID) {
-                self.locationManager.startRangingBeacons(in: user.asBeaconRegion())
-            } else {
-                printt("Unable to create NotifyUserModel from provided Account ID")
-            }
-        }
-    }
+//    func observeAddedRangingBeacon() {
+//        printt("observeAddedRangingBeacon()")
+//        refUsers.child("\(currentUser.accountID)/\(FRDKeys.NotifyUUIDModel)/\(FRDKeys.RangingBeacons)").observe(.childAdded) { (snapshot) in
+//            let addedRangingBeaconAccountID = snapshot.value as! String
+//            guard let user = self.findUserFromUserList(accountID: addedRangingBeaconAccountID) else {
+//                printt("Unable to create NotifyUserModel from provided Account ID")
+//                return }
+//            if (self.currentUser.isOnline == false) {
+//                    self.advertiseDevice(region: self.currentUser.asBeaconRegion())
+//                    self.locationManager.startMonitoring(for: user.asBeaconRegion())
+//                    self.currentUser.removeMonitoringAccountID(forAccountID: addedMonitoringBeaconAccountID)
+//                    self.currentUser.removeRangingAccountID(forAccountID: addedMonitoringBeaconAccountID)
+//                }))
+//                self.present(alert, animated: true, completion: nil)
+//            } else {
+//                self.locationManager.startMonitoring(for: user.asBeaconRegion())
+//            }
+//        }
+//    }
     
     func observeRemovedMonitoringBeacon() {
-        refUsers.child("\(currentUser.accountID)/\(FRDKeys.NotifyUUIDModel)/\(FRDKeys.MonitoringBeacons)").observe(.childRemoved) { (snapshot) in
+        refUsers.child("\(currentUser.accountID)/\(FRDKeys.NotifyUUIDModel)/\(FRDKeys.MonitoringRangingBeacons)").observe(.childRemoved) { (snapshot) in
             let removedMonitoringBeaconAccountID = snapshot.value as! String
-            if let user = self.findUserFromUserList(accountID: removedMonitoringBeaconAccountID) {
-                self.locationManager.stopMonitoring(for: user.asBeaconRegion())
-            } else {
+            guard let user = self.findUserFromUserList(accountID: removedMonitoringBeaconAccountID) else {
                 printt("Unable to create NotifyUserModel from provided Account ID")
+                return
             }
+            if (self.currentUser.uuid.monitoringRangingBeacons.isEmpty) {
+                self.peripheralManager.stopAdvertising()
+            }
+            self.locationManager.stopMonitoring(for: user.asBeaconRegion())
+            self.locationManager.stopRangingBeacons(in: user.asBeaconRegion())
         }
     }
     
-    func observeRemovedRangingBeacon() {
-        refUsers.child("\(currentUser.accountID)/\(FRDKeys.NotifyUUIDModel)/\(FRDKeys.RangingBeacons)").observe(.childRemoved) { (snapshot) in
-            let removedRangingBeaconAccountID = snapshot.value as! String
-            self.currentUser.removeRangingAccountID(forAccountID: removedRangingBeaconAccountID)
-            if let user = self.findUserFromUserList(accountID: removedRangingBeaconAccountID) {
-                self.locationManager.stopRangingBeacons(in: user.asBeaconRegion())
-            } else {
-                printt("Unable to create NotifyUserModel from provided Account ID")
-            }
-        }
-    }
+//    func observeRemovedRangingBeacon() {
+//        refUsers.child("\(currentUser.accountID)/\(FRDKeys.NotifyUUIDModel)/\(FRDKeys.RangingBeacons)").observe(.childRemoved) { (snapshot) in
+//            let removedRangingBeaconAccountID = snapshot.value as! String
+//            self.currentUser.removeRangingAccountID(forAccountID: removedRangingBeaconAccountID)
+//            if let user = self.findUserFromUserList(accountID: removedRangingBeaconAccountID) {
+//                self.locationManager.stopRangingBeacons(in: user.asBeaconRegion())
+//            } else {
+//                printt("Unable to create NotifyUserModel from provided Account ID")
+//            }
+//        }
+//    }
     
     // Observes users Firebase Realtime Database. When a change is observed,
     // userList is updated.
@@ -221,32 +250,24 @@ class NotifyViewController: UIViewController {
         let name = NotifyNameModel(firstName: userNameFirst , lastName: userNameLast)
         
         // Getting is notifying
-        let userIsNotifying = user[FRDKeys.IsNotifying] as! Bool
+        let userIsNotifying = user[FRDKeys.isNotifying] as! Bool
         
         let userUUID = user[FRDKeys.NotifyUUIDModel] as! [String: Any]
         // Getting user UUID
         let userUUIDUser = userUUID[FRDKeys.UUIDUser] as! String
         
         // Getting monitoring beacons
-        var monitoringBeacons = [String:String]()
-        if (userUUID[FRDKeys.MonitoringBeacons] != nil) {
-            let userMonitoringBeaconsDictionary1 = userUUID[FRDKeys.MonitoringBeacons] as! [String:String]
-            for pair in userMonitoringBeaconsDictionary1 {
-                monitoringBeacons.updateValue(pair.value, forKey: pair.key)
+        var monitoringRangingBeacons = [String:String]()
+        if (userUUID[FRDKeys.MonitoringRangingBeacons] != nil) {
+            let userMonitoringRangingBeaconsDictionary1 = userUUID[FRDKeys.MonitoringRangingBeacons] as! [String:String]
+            for pair in userMonitoringRangingBeaconsDictionary1 {
+                monitoringRangingBeacons.updateValue(pair.value, forKey: pair.key)
             }
         }
-        // Getting ranging beacons
-        var rangingBeacons = [String:String]()
-        if (userUUID[FRDKeys.RangingBeacons] != nil) {
-            let userRangingBeacons1 = userUUID[FRDKeys.RangingBeacons] as! [String:String]
-            for pair in userRangingBeacons1 {
-                rangingBeacons.updateValue(pair.value, forKey: pair.key)
-            }
-        }
-        let uuid = NotifyUUIDModel(uuid: userUUIDUser, monitoringBeacons: monitoringBeacons, rangingBeacons: rangingBeacons)
+        let uuid = NotifyUUIDModel(uuid: userUUIDUser, monitoringRangingBeacons: monitoringRangingBeacons)
         
         // Creating artist object with model and fetched values
-        return NotifyUserModel(accountID: userAccountID, name: name, location: location, uuid: uuid, isNotifying: userIsNotifying)
+        return NotifyUserModel(accountID: userAccountID, name: name, location: location, uuid: uuid, isOnline: userIsNotifying)
     }
     
     // Finds user object from userList.
@@ -259,17 +280,4 @@ class NotifyViewController: UIViewController {
         return nil
     }
     
-    func askForConnectionOnIBeacon() -> Bool {
-        let alert = UIAlertController(title: "Request for Connection", message: "A nearby user is in danger! Agree to connect and share location information with the user?", preferredStyle: UIAlertController.Style.alert)
-        alert.addAction(UIAlertAction(title: "Connect", style: UIAlertAction.Style.default, handler: { action in
-            self.currentUser.updateIsNotifying(isNotifying: true)
-            self.temporaryDecision = true
-        }))
-        alert.addAction(UIAlertAction(title: "Reject", style: UIAlertAction.Style.cancel, handler: { action in
-            self.currentUser.updateIsNotifying(isNotifying: false)
-            self.temporaryDecision = false
-        }))
-        self.present(alert, animated: true, completion: nil)
-        return temporaryDecision
-    }
 }
