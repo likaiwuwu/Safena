@@ -28,9 +28,10 @@ class NotifyViewController: UIViewController {
             self.bystanderTableView.reloadData()
         }
     }
-    var fakeUser = NotifyUserModel()
+    var currentUser = NotifyUserModel()
     var temporaryUser: NotifyUserModel!
-    var decision: Bool!
+    var temporaryDecision: Bool!
+    var temporaryUsers: [NotifyUserModel]!
 
     
     //MARK:- Outlets
@@ -41,18 +42,17 @@ class NotifyViewController: UIViewController {
     //MARK:- Actions
     
     @IBAction func notifyButtonAction(_ sender: UIButton) {
-        if fakeUser.isNotifying == false {
-            advertiseDevice(region: fakeUser.asBeaconRegion())
-            fakeUser.updateIsNotifying(isNotifying: true)
-            fakeUser.updateVictimUUID(userList: userList, victimUUIDString: fakeUser.uuid.uuidString)
+        if currentUser.isNotifying == false {
+            advertiseDevice(region: currentUser.asBeaconRegion())
+            currentUser.updateIsNotifying(isNotifying: true)
+            currentUser.updateVictimUUID(userList: userList, victimUUIDString: currentUser.uuid.uuidString)
         } else {
             peripheralManager.stopAdvertising()
-            fakeUser.updateIsNotifying(isNotifying: false)
-            fakeUser.updateVictimUUID(userList: userList, victimUUIDString: "")
+            currentUser.updateIsNotifying(isNotifying: false)
+            currentUser.updateVictimUUID(userList: userList, victimUUIDString: "")
         }
-        sender.isSelected = fakeUser.isNotifying
+        sender.isSelected = currentUser.isNotifying
     }
-    
     
     //MARK:- Override
     
@@ -68,8 +68,8 @@ class NotifyViewController: UIViewController {
         let splitName = name?.split(separator: " ")
         let firstName = String(splitName?[0] ?? "N/A")
         let lastName = String(splitName?[1] ?? "N/A")
-        fakeUser = NotifyUserModel(accountID: accountID!, name: NotifyNameModel(firstName: firstName, lastName: lastName), location: locationManager.location!, uuid: NotifyUUIDModel())
-        fakeUser.postAsUserOnFRD()
+        currentUser = NotifyUserModel(accountID: accountID!, name: NotifyNameModel(firstName: firstName, lastName: lastName), location: locationManager.location!, uuid: NotifyUUIDModel())
+        currentUser.postAsUserOnFRD()
         
         // TableView
         bystanderTableView.delegate = self
@@ -99,7 +99,7 @@ class NotifyViewController: UIViewController {
         observeVictimUUIDNew()
         
         //DELETE LATER
-        refUsers.child(fakeUser.accountID).onDisconnectRemoveValue()
+        refUsers.child(currentUser.accountID).onDisconnectRemoveValue()
         
     }
     
@@ -131,16 +131,15 @@ class NotifyViewController: UIViewController {
     // Observes the victim uuid from the user's Firebase Realtime Database. When a change is observed,
     // starts/stops monitoring/ranging and updates previous victim UUID, as well.
     func observeVictimUUIDNew() {
-        refUsers.child("\(fakeUser.accountID)/Notify UUID Model/Victim UUID").observe(.value) { (snapshot) in
+        refUsers.child("\(currentUser.accountID)/Notify UUID Model/Victim UUID").observe(.value) { (snapshot) in
             let victimUUIDString = snapshot.value as! String
             if (!victimUUIDString.isEmpty) {
-                guard self.askForConnectionOnIBeacon() == true else { return }
-                if let user = self.findUserFromUserList(uuid: victimUUIDString) {
-                    self.fakeUser.updatePreviousVictimUUID(previousUUID: victimUUIDString)
+                if self.askForConnectionOnIBeacon() == true, let user = self.findUserFromUserList(uuid: victimUUIDString) {
+                    self.currentUser.updatePreviousVictimUUID(previousUUID: victimUUIDString)
                     self.startMonitoringAndRangingUser(user: user)
                 }
             } else {
-                if let user = self.findUserFromUserList(uuid: self.fakeUser.uuid.uuidPreviousVictimString) {
+                if let user = self.findUserFromUserList(uuid: self.currentUser.uuid.uuidPreviousVictimString) {
                     self.stopMonitoringAndRangingUser(user: user)
                 }
             }
@@ -184,6 +183,47 @@ class NotifyViewController: UIViewController {
         return temporaryUser
     }
     
+//    func createAllUsersFromFRD() -> NotifyUserModel? {
+//        refUsers.observeSingleEvent(of: .value) { (snapshot) in
+//            for userObject in snapshot.children {
+//                let user1 = userObject as! DataSnapshot
+//                let user = user1.value as! [String: Any]
+//
+//                // Getting Account ID
+//                let userAccountID = user[FRDKeys.AccountID] as! String
+//
+//                // Getting Location
+//                let userLocation = user[FRDKeys.Location] as! [String: Any]
+//                let userCoordinate = userLocation[FRDKeys.Coordinate] as! [String: Any]
+//                let userLatitude = userCoordinate[FRDKeys.Latitude] as! CLLocationDegrees
+//                let userLongitude = userCoordinate[FRDKeys.Longitude] as! CLLocationDegrees
+//                let location = CLLocation(latitude: userLatitude, longitude: userLongitude)
+//
+//                // Getting Notify Name Model
+//                let userName = user[FRDKeys.NotifyNameModel] as! [String: Any]
+//                let userNameFirst = userName[FRDKeys.FirstName] as! String
+//                let userNameLast = userName[FRDKeys.LastName] as! String
+//                let name = NotifyNameModel(firstName: userNameFirst , lastName: userNameLast)
+//
+//                // Getting is notifying
+//                let userIsNotifying = user[FRDKeys.IsNotifying] as! Bool
+//
+//                let userUUID = user[FRDKeys.NotifyUUIDModel] as! [String: Any]
+//                // Getting user UUID
+//                let userUUIDUser = userUUID[FRDKeys.UUIDUser] as! String
+//                // Getting user victim UUID
+//                let userUUIDVictim = userUUID[FRDKeys.UUIDVictim] as! String
+//                // Getting use previous victim UUID
+//                let userUUIDPreviousVictim = userUUID[FRDKeys.UUIDPreviousVictim] as! String
+//                let uuid = NotifyUUIDModel(uuid: userUUIDUser, uuidVictim: userUUIDVictim, uuidPreviousVictim: userUUIDPreviousVictim)
+//
+//                // Creating artist object with model and fetched values
+//                let userModel = NotifyUserModel(accountID: userAccountID, name: name, location: location, uuid: uuid, isNotifying: userIsNotifying)
+//                //appending it to list
+//            }
+//        }
+//    }
+    
     // Observes users Firebase Realtime Database. When a change is observed,
     // userList is updated.
     func observeValueUserFromFRD() {
@@ -225,7 +265,7 @@ class NotifyViewController: UIViewController {
                     // Creating artist object with model and fetched values
                     let userModel = NotifyUserModel(accountID: userAccountID, name: name, location: location, uuid: uuid, isNotifying: userIsNotifying)
                     //appending it to list
-                    if (userModel.accountID != self.fakeUser.accountID) {
+                    if (userModel.accountID != self.currentUser.accountID) {
                         self.userList.append(userModel)
                     }
                 }
@@ -246,12 +286,14 @@ class NotifyViewController: UIViewController {
     func askForConnectionOnIBeacon() -> Bool {
         let alert = UIAlertController(title: "Request for Connection", message: "A nearby user is in danger! Agree to connect and share location information with the user?", preferredStyle: UIAlertController.Style.alert)
         alert.addAction(UIAlertAction(title: "Connect", style: UIAlertAction.Style.default, handler: { action in
-            self.decision = true
+            self.currentUser.updateIsNotifying(isNotifying: true)
+            self.temporaryDecision = true
         }))
         alert.addAction(UIAlertAction(title: "Reject", style: UIAlertAction.Style.cancel, handler: { action in
-            self.decision = false
+            self.currentUser.updateIsNotifying(isNotifying: false)
+            self.temporaryDecision = false
         }))
         self.present(alert, animated: true, completion: nil)
-        return decision
+        return temporaryDecision
     }
 }

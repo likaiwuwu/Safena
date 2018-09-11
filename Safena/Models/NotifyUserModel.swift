@@ -27,13 +27,19 @@ class NotifyUserModel {
     var isNotifying: Bool
     // Beacon Region
     lazy var beaconRegion = self.asBeaconRegion()
+    // Monitoring Beacons
+    var monitoringBeacons: [Int:String]
+    // Ranging Beacons
+    var rangingBeacons: [Int:String]
     
-    init(accountID: String = "", name: NotifyNameModel = NotifyNameModel(), location: CLLocation = CLLocation(), uuid: NotifyUUIDModel = NotifyUUIDModel(), isNotifying: Bool = false) {
+    init(accountID: String = "", name: NotifyNameModel = NotifyNameModel(), location: CLLocation = CLLocation(), uuid: NotifyUUIDModel = NotifyUUIDModel(), isNotifying: Bool = false, monitoringBeacons: [Int:String] = [Int:String](), rangingBeacons: [Int:String] = [Int:String]()) {
         self.accountID = accountID
         self.name = name
         self.location = location
         self.uuid = uuid
         self.isNotifying = isNotifying
+        self.monitoringBeacons = monitoringBeacons
+        self.rangingBeacons = rangingBeacons
     }
     
     func asBeaconRegion() -> CLBeaconRegion {
@@ -46,18 +52,35 @@ class NotifyUserModel {
         let location = [FRDKeys.Coordinate: coordinate]
         let uuid = [FRDKeys.UUIDUser: self.uuid.uuidString,
                     FRDKeys.UUIDVictim: self.uuid.uuidVictimString,
-                    FRDKeys.UUIDPreviousVictim: self.uuid.uuidPreviousVictimString]
+                    FRDKeys.UUIDPreviousVictim: self.uuid.uuidPreviousVictimString,
+                    FRDKeys.MonitoringBeacons: self.monitoringBeacons,
+                    FRDKeys.RangingBeacons: self.rangingBeacons] as [String : Any]
         Database.database().reference().child(FRDKeys.Users).child(self.accountID).updateChildValues(
             [FRDKeys.AccountID: accountID,
              FRDKeys.NotifyNameModel: name,
              FRDKeys.Location: location,
              FRDKeys.IsNotifying: isNotifying,
-             FRDKeys.NotifyUUIDModel: uuid
+             FRDKeys.NotifyUUIDModel: uuid,
             ]
         )
     }
     
     // Public Updates
+    
+    func updateMonitoringAndRangingUsers(user: NotifyUserModel) {
+        updateMonitoringUsers(user: user)
+        updateRangingUsers(user: user)
+    }
+    
+    func updateMonitoringUsers(user: NotifyUserModel) {
+        monitoringBeacons[user.uuid.uuidString.hashValue] = user.uuid.uuidString
+        updateSelfValue(key: FRDKeys.RangingBeacons, value: monitoringBeacons)
+    }
+    
+    func updateRangingUsers(user: NotifyUserModel) {
+        monitoringBeacons[user.uuid.uuidString.hashValue] = user.uuid.uuidString
+        updateSelfValue(key: FRDKeys.RangingBeacons, value: monitoringBeacons)
+    }
     
     func updateIsNotifying(isNotifying: Bool) {
         self.isNotifying = isNotifying

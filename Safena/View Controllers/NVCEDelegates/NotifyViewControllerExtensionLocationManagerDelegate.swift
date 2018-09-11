@@ -15,10 +15,14 @@ import CoreBluetooth
 extension NotifyViewController: CLLocationManagerDelegate {
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        fakeUser.updateLocationCoordinate(coordinate: locations[0].coordinate)
+        currentUser.updateLocationCoordinate(coordinate: locations[0].coordinate)
     }
     
     func locationManager(_ manager: CLLocationManager, didStartMonitoringFor region: CLRegion) {
+        currentUser.updateMonitoringUsers(user: region.)
+        if let otherUser = createUserFromFRD(accountID: region.identifier) {
+            otherUser.updateMonitoringUsers(user: currentUser)
+        }
         printt("""
             MANAGER: \(manager.debugDescription)
             DID START MONITORING FOR REGION: \(region.debugDescription)
@@ -27,10 +31,12 @@ extension NotifyViewController: CLLocationManagerDelegate {
     
     func locationManager(_ manager: CLLocationManager, didRangeBeacons beacons: [CLBeacon], in region: CLBeaconRegion) {
         printt("DID RANGE BEACONS")
+        if let victimUser = createUserFromFRD(accountID: region.identifier) {
+            victimUser.updateRangingUsers(user: currentUser)
+        }
         if let user = createUserFromFRD(accountID: region.identifier) {
             startMonitoringAndRangingUser(user: user)
             printt("Did range beacons for Region Identifier: \(region.identifier)")
-            
         }
         update(distance: beacons.first?.proximity ?? .unknown)
     }
@@ -58,6 +64,7 @@ extension NotifyViewController: CLLocationManagerDelegate {
     }
     
     func locationManager(_ manager: CLLocationManager, rangingBeaconsDidFailFor region: CLBeaconRegion, withError error: Error) {
+//        stopMonitoringAndRangingUser(user: user)
         printt("""
             MANAGER: \(manager.debugDescription)
             RANGING BEACONS DID FAIL FOR REGION: \(region.debugDescription)

@@ -16,7 +16,7 @@ extension NotifyViewController: UITableViewDelegate {
         let user = userList[indexPath.row]
         
         cell.nameLabel.text = user.name.getFullName()
-        let distance = fakeUser.location.distance(from: user.location)
+        let distance = currentUser.location.distance(from: user.location)
         cell.distanceLabel.text = String("\(distance.rounded(.up))m")
         
         return cell
