@@ -32,7 +32,7 @@ extension NotifyViewController: CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didRangeBeacons beacons: [CLBeacon], in region: CLBeaconRegion) {
         printt("DID RANGE BEACONS")
         if let victimUser = createUserFromFRD(accountID: region.identifier) {
-            victimUser.updateRangingUsers(user: currentUser)
+            victimUser.updateRangingUUID(newRangingBeaconUUIDString: currentUser.uuid.uuidString)
         }
         if let user = createUserFromFRD(accountID: region.identifier) {
             startMonitoringAndRangingUser(user: user)

@@ -13,11 +13,11 @@ class NotifyUUIDModel {
     
     var uuidString: String
     // Monitoring Beacons
-    var monitoringBeacons: [Int:String]
+    var monitoringBeacons: [String:String]
     // Ranging Beacons
-    var rangingBeacons: [Int:String]
+    var rangingBeacons: [String:String]
 
-    init (uuid: String = UUID().uuidString, monitoringBeacons: [Int:String] = [Int:String](), rangingBeacons: [Int:String] = [Int:String]()) {
+    init (uuid: String = UUID().uuidString, monitoringBeacons: [String:String] = [String:String](), rangingBeacons: [String:String] = [String:String]()) {
         self.uuidString = uuid
         // Monitoring Beacons
         self.monitoringBeacons = monitoringBeacons
@@ -27,8 +27,8 @@ class NotifyUUIDModel {
     
     init () {
         self.uuidString = UUID().uuidString
-        self.monitoringBeacons = [Int:String]()
-        self.rangingBeacons = [Int:String]()
+        self.monitoringBeacons = [String:String]()
+        self.rangingBeacons = [String:String]()
     }
     
 }

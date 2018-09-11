@@ -71,18 +71,18 @@ class NotifyUserModel {
         }
     }
     
-    func updateMonitoringAndRangingUsers(user: NotifyUserModel) {
-        updateMonitoringUsers(user: user)
-        updateRangingUsers(user: user)
+    func updateMonitoringAndRangingUsers(newUUID: String) {
+        updateMonitoringUUID(newMonitoringBeaconUUIDString: newUUID)
+        updateRangingUUID(newRangingBeaconUUIDString: newUUID)
     }
     
-    func updateMonitoringUsers(user: NotifyUserModel) {
-        uuid.monitoringBeacons.updateValue(user.uuid.uuidString, forKey: user.uuid.uuidString.hashValue)
+    func updateMonitoringUUID(newMonitoringBeaconUUIDString: String) {
+        uuid.monitoringBeacons.updateValue(newMonitoringBeaconUUIDString, forKey: String(newMonitoringBeaconUUIDString.hashValue))
         updateSelfValue(key: FRDKeys.ToMonitoringBeacons, value: uuid.monitoringBeacons)
     }
     
-    func updateRangingUsers(user: NotifyUserModel) {
-        uuid.rangingBeacons.updateValue(user.uuid.uuidString, forKey: user.uuid.uuidString.hashValue)
+    func updateRangingUUID(newRangingBeaconUUIDString: String) {
+        uuid.rangingBeacons.updateValue(newRangingBeaconUUIDString, forKey: String(newRangingBeaconUUIDString.hashValue))
         updateSelfValue(key: FRDKeys.ToRangingBeacons, value: uuid.rangingBeacons)
     }
     

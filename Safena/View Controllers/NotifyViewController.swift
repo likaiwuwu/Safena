@@ -75,11 +75,11 @@ class NotifyViewController: UIViewController {
             locationManager.distanceFilter = 0.1
         }
         
-        //        let accountID = Auth.auth().currentUser?.uid
-        //        let name = Auth.auth().currentUser?.displayName
-        //        let splitName = name?.split(separator: " ")
-        //        let firstName = String(splitName?[0] ?? "N/A")
-        //        let lastName = String(splitName?[1] ?? "N/A")
+//                let accountID = Auth.auth().currentUser?.uid
+//                let name = Auth.auth().currentUser?.displayName
+//                let splitName = name?.split(separator: " ")
+//                let firstName = String(splitName?[0] ?? "N/A")
+//                let lastName = String(splitName?[1] ?? "N/A")
         currentUser = NotifyUserModel(accountID: refUsers.childByAutoId().key, name: NotifyNameModel(firstName: "Li-Kai", lastName: "Wu"), location: locationManager.location!, uuid: NotifyUUIDModel(), isNotifying: false)
         currentUser.postAsUserOnFRD()
         
@@ -97,7 +97,7 @@ class NotifyViewController: UIViewController {
         
         // Firebase Realtime Database Configurations
         observeValueUserFromFRD()
-        observeVictimUUIDNew()
+        observeAddedMonitoringBeacon()
         
         //DELETE LATER
         refUsers.child(currentUser.accountID).onDisconnectRemoveValue()
@@ -131,19 +131,14 @@ class NotifyViewController: UIViewController {
     
     // Observes the victim uuid from the user's Firebase Realtime Database. When a change is observed,
     // starts/stops monitoring/ranging and updates previous victim UUID, as well.
-    func observeVictimUUIDNew() {
-        refUsers.child("\(currentUser.accountID)/Notify UUID Model/Monitoring Beacons").observe(.value) { (snapshot) in
-            //            let victimUUIDString = snapshot.value as! String
-            //            if (!victimUUIDString.isEmpty) {
-            //                if self.askForConnectionOnIBeacon() == true, let user = self.findUserFromUserList(uuid: victimUUIDString) {
-            ////                    self.currentUser.updatePreviousVictimUUID(previousUUID: victimUUIDString)
-            //                    self.startMonitoringAndRangingUser(user: user)
-            //                }
-            //            } else {
-            //                if let user = self.findUserFromUserList(uuid: self.currentUser.uuid.uuidPreviousVictimString) {
-            //                    self.stopMonitoringAndRangingUser(user: user)
-            //                }
-            //            }
+    func observeAddedMonitoringBeacon() {
+        refUsers.child("\(currentUser.accountID)/Notify UUID Model/Monitoring Beacons").observe(.childAdded) { (snapshot) in
+            print(snapshot)
+            let newMonitoringBeaconUUID = snapshot.value as! String
+            //newMonitoringBeaconUUID IS NOT IN THE MONITORING BEACON ARRAY ANYMORE
+            if self.askForConnectionOnIBeacon() == true {
+                self.currentUser.updateMonitoringAndRangingUsers(newUUID: newMonitoringBeaconUUID)
+            }
         }
     }
     
@@ -175,18 +170,18 @@ class NotifyViewController: UIViewController {
             let userUUIDUser = userUUID[FRDKeys.UUIDUser] as! String
             
             // Getting monitoring beacons
-            var monitoringBeacons = [Int:String]()
+            var monitoringBeacons = [String:String]()
             if !self.currentUser.uuid.monitoringBeacons.isEmpty {
                 let userMonitoringBeaconsDictionary1 = userUUID[FRDKeys.MonitoringBeacons] as! DataSnapshot
-                for pair in userMonitoringBeaconsDictionary1.value as! [Int:String] {
+                for pair in userMonitoringBeaconsDictionary1.value as! [String:String] {
                     monitoringBeacons.updateValue(pair.value, forKey: pair.key)
                 }
             }
             // Getting ranging beacons
-            var rangingBeacons = [Int:String]()
+            var rangingBeacons = [String:String]()
             if !self.currentUser.uuid.rangingBeacons.isEmpty {
                 let userRangingBeacons1 = userUUID[FRDKeys.RangingBeacons] as! DataSnapshot
-                for pair in userRangingBeacons1.value as! [Int:String] {
+                for pair in userRangingBeacons1.value as! [String:String] {
                     rangingBeacons.updateValue(pair.value, forKey: pair.key)
                 }
             }
@@ -273,18 +268,18 @@ class NotifyViewController: UIViewController {
                     let userUUIDUser = userUUID[FRDKeys.UUIDUser] as! String
                     
                     // Getting monitoring beacons
-                    var monitoringBeacons = [Int:String]()
+                    var monitoringBeacons = [String:String]()
                     if !self.currentUser.uuid.monitoringBeacons.isEmpty {
                         let userMonitoringBeaconsDictionary1 = userUUID[FRDKeys.MonitoringBeacons] as! DataSnapshot
-                        for pair in userMonitoringBeaconsDictionary1.value as! [Int:String] {
+                        for pair in userMonitoringBeaconsDictionary1.value as! [String:String] {
                             monitoringBeacons.updateValue(pair.value, forKey: pair.key)
                         }
                     }
                     // Getting ranging beacons
-                    var rangingBeacons = [Int:String]()
+                    var rangingBeacons = [String:String]()
                     if !self.currentUser.uuid.rangingBeacons.isEmpty {
                         let userRangingBeacons1 = userUUID[FRDKeys.RangingBeacons] as! DataSnapshot
-                        for pair in userRangingBeacons1.value as! [Int:String] {
+                        for pair in userRangingBeacons1.value as! [String:String] {
                             rangingBeacons.updateValue(pair.value, forKey: pair.key)
                         }
                     }
