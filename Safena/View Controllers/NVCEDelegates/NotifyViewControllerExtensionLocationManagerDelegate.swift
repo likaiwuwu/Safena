@@ -19,10 +19,10 @@ extension NotifyViewController: CLLocationManagerDelegate {
     }
     
     func locationManager(_ manager: CLLocationManager, didStartMonitoringFor region: CLRegion) {
-//        currentUser.updateMonitoringUsers(user: region.)
-//        if let otherUser = createUserFromFRD(accountID: region.identifier) {
-//            otherUser.updateMonitoringUsers(user: currentUser)
-//        }
+        currentUser.addRangingAccountID(forAccountID: region.identifier)
+        if let user = findUserFromUserList(accountID: region.identifier) {
+            locationManager.startRangingBeacons(in: user.asBeaconRegion())
+        }
         printt("""
             MANAGER: \(manager.debugDescription)
             DID START MONITORING FOR REGION: \(region.debugDescription)
@@ -31,21 +31,15 @@ extension NotifyViewController: CLLocationManagerDelegate {
     
     func locationManager(_ manager: CLLocationManager, didRangeBeacons beacons: [CLBeacon], in region: CLBeaconRegion) {
         printt("DID RANGE BEACONS")
-        if let victimUser = createUserFromFRD(accountID: region.identifier) {
-            victimUser.updateRangingUUID(newRangingBeaconUUIDString: currentUser.uuid.uuidString)
-        }
-        if let user = createUserFromFRD(accountID: region.identifier) {
-            startMonitoringAndRangingUser(user: user)
-            printt("Did range beacons for Region Identifier: \(region.identifier)")
-        }
         update(distance: beacons.first?.proximity ?? .unknown)
     }
     
+    func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
+        printt("DID ENTER REGION")
+    }
+    
     func locationManager(_ manager: CLLocationManager, didExitRegion region: CLRegion) {
-        if let user = createUserFromFRD(accountID: region.identifier) {
-            stopMonitoringAndRangingUser(user: user)
-            printt("Did exit region for Region Identifier: \(region.identifier)")
-        }
+        printt("DID EXIT REGION")
     }
     
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
@@ -64,7 +58,6 @@ extension NotifyViewController: CLLocationManagerDelegate {
     }
     
     func locationManager(_ manager: CLLocationManager, rangingBeaconsDidFailFor region: CLBeaconRegion, withError error: Error) {
-//        stopMonitoringAndRangingUser(user: user)
         printt("""
             MANAGER: \(manager.debugDescription)
             RANGING BEACONS DID FAIL FOR REGION: \(region.debugDescription)
@@ -86,16 +79,16 @@ extension NotifyViewController: CLLocationManagerDelegate {
         UIView.animate(withDuration: 0.8) { [unowned self] in
             switch distance {
             case .unknown:
-                self.view.backgroundColor = UIColor.init(hex: 0x9698e8)
+                self.view.backgroundColor = UIColor.white
                 printt("UNKNOWN")
             case .far:
-                self.view.backgroundColor = UIColor.init(hex: 0x6c6fdf)
+                self.view.backgroundColor = UIColor.cyan
                 printt("FAR")
             case .near:
-                self.view.backgroundColor = UIColor.init(hex: 0x4246d6)
+                self.view.backgroundColor = UIColor.yellow
                 printt("NEAR")
             case .immediate:
-                self.view.backgroundColor = UIColor.init(hex: 0x292cbd)
+                self.view.backgroundColor = UIColor.red
                 printt("IMMEDIATE")
             }
         }

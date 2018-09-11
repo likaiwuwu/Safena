@@ -58,31 +58,55 @@ class NotifyUserModel {
     
     // Public Updates
     
-    func updateNearbyUsersMonitoringBeaconsWithUUID(uuid: String) {
+    func addAccountIDToNearbyUsersMonitoringBeacons() {
         refUsers.observeSingleEvent(of: .value) { (snapshot) in
             for user in snapshot.children {
                 let user1 = user as! DataSnapshot
                 let user2 = user1.value as! [String:Any]
                 let user3 = user2[FRDKeys.AccountID] as! String
                 if (user3 != self.accountID) {
-                    refUsers.child("\(user3)/\(FRDKeys.NotifyUUIDModel)/\(FRDKeys.MonitoringBeacons)").updateChildValues([String(uuid.hashValue):uuid])
+                    refUsers.child("\(user3)/\(FRDKeys.NotifyUUIDModel)/\(FRDKeys.MonitoringBeacons)").updateChildValues([self.accountID:self.accountID])
                 }
             }
         }
     }
     
-    func updateMonitoringAndRangingUsers(newUUID: String) {
-        updateMonitoringUUID(newMonitoringBeaconUUIDString: newUUID)
-        updateRangingUUID(newRangingBeaconUUIDString: newUUID)
+    func removeAccountIDToNearbyUsersMonitoringBeacons() {
+        refUsers.observeSingleEvent(of: .value) { (snapshot) in
+            for user in snapshot.children {
+                let user1 = user as! DataSnapshot
+                let user2 = user1.value as! [String:Any]
+                let user3 = user2[FRDKeys.AccountID] as! String
+                if (user3 != self.accountID) {
+                    refUsers.child("\(user3)/\(FRDKeys.NotifyUUIDModel)/\(FRDKeys.MonitoringBeacons)/\(self.accountID)").removeValue()
+                    self.uuid.monitoringBeacons.removeValue(forKey: self.accountID)
+                }
+            }
+        }
     }
     
-    func updateMonitoringUUID(newMonitoringBeaconUUIDString: String) {
-        uuid.monitoringBeacons.updateValue(newMonitoringBeaconUUIDString, forKey: String(newMonitoringBeaconUUIDString.hashValue))
-        updateSelfValue(key: FRDKeys.ToMonitoringBeacons, value: uuid.monitoringBeacons)
+    func removeAccountIDToNearbyUsersRangingBeacons() {
+        refUsers.observeSingleEvent(of: .value) { (snapshot) in
+            for user in snapshot.children {
+                let user1 = user as! DataSnapshot
+                let user2 = user1.value as! [String:Any]
+                let user3 = user2[FRDKeys.AccountID] as! String
+                if (user3 != self.accountID) {
+                    refUsers.child("\(user3)/\(FRDKeys.NotifyUUIDModel)/\(FRDKeys.RangingBeacons)/\(self.accountID)").removeValue()
+                    self.uuid.rangingBeacons.removeValue(forKey: self.accountID)
+                }
+            }
+        }
+    }
+
+
+    func removeRangingAccountID(forAccountID accountID: String) {
+        uuid.rangingBeacons.removeValue(forKey: accountID)
+        updateSelfValue(key: FRDKeys.ToRangingBeacons, value: uuid.rangingBeacons)
     }
     
-    func updateRangingUUID(newRangingBeaconUUIDString: String) {
-        uuid.rangingBeacons.updateValue(newRangingBeaconUUIDString, forKey: String(newRangingBeaconUUIDString.hashValue))
+    func addRangingAccountID(forAccountID accountID: String) {
+        uuid.rangingBeacons.updateValue(accountID, forKey: accountID)
         updateSelfValue(key: FRDKeys.ToRangingBeacons, value: uuid.rangingBeacons)
     }
     

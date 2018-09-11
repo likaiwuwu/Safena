@@ -31,7 +31,7 @@ class NotifyViewController: UIViewController {
     var currentUser = NotifyUserModel()
     var temporaryUser: NotifyUserModel!
     var temporaryDecision: Bool!
-    var temporaryUsers: [NotifyUserModel]!
+    var temporaryUsers = [NotifyUserModel]()
     
     //MARK:- Outlets
     
@@ -44,11 +44,12 @@ class NotifyViewController: UIViewController {
         if currentUser.isNotifying == false {
             advertiseDevice(region: currentUser.asBeaconRegion())
             currentUser.updateIsNotifying(isNotifying: true)
-            currentUser.updateNearbyUsersMonitoringBeaconsWithUUID(uuid: currentUser.uuid.uuidString)
+            currentUser.addAccountIDToNearbyUsersMonitoringBeacons()
         } else {
             peripheralManager.stopAdvertising()
             currentUser.updateIsNotifying(isNotifying: false)
-            //            currentUser.updateVictimUUID(userList: userList, victimUUIDString: "")
+            currentUser.removeAccountIDToNearbyUsersMonitoringBeacons()
+            currentUser.removeAccountIDToNearbyUsersRangingBeacons()
         }
         sender.isSelected = currentUser.isNotifying
     }
@@ -86,6 +87,7 @@ class NotifyViewController: UIViewController {
         // TableView
         bystanderTableView.delegate = self
         bystanderTableView.dataSource = self
+        bystanderTableView.rowHeight = 88
         
         // Button Configuration
         notifyButtonOutlet.setTitle("Notifying", for: .selected)
@@ -98,6 +100,9 @@ class NotifyViewController: UIViewController {
         // Firebase Realtime Database Configurations
         observeValueUserFromFRD()
         observeAddedMonitoringBeacon()
+        observeAddedRangingBeacon()
+        observeRemovedMonitoringBeacon()
+        observeRemovedRangingBeacon()
         
         //DELETE LATER
         refUsers.child(currentUser.accountID).onDisconnectRemoveValue()
@@ -106,23 +111,24 @@ class NotifyViewController: UIViewController {
     
     
     //Starts both monitoring and ranging for parameter user beacon.
-    func startMonitoringAndRangingUser(user: NotifyUserModel) {
-        printt("Started Monitoring: \(user)")
-        let beaconRegion = user.beaconRegion
-        locationManager.startMonitoring(for: beaconRegion)
-        locationManager.startRangingBeacons(in: beaconRegion)
-    }
-    
-    //Stops both monitoring and ranging for parameter user beacon.
-    func stopMonitoringAndRangingUser(user: NotifyUserModel) {
-        printt("Stopped Monitoring: \(user)")
-        let beaconRegion = user.beaconRegion
-        locationManager.stopMonitoring(for: beaconRegion)
-        locationManager.stopRangingBeacons(in: beaconRegion)
-    }
+//    func startMonitoringAndRangingUser(user: NotifyUserModel) {
+//        printt("Started Monitoring: \(user)")
+//        let beaconRegion = user.beaconRegion
+//        locationManager.startMonitoring(for: beaconRegion)
+//        locationManager.startRangingBeacons(in: beaconRegion)
+//    }
+//
+//    //Stops both monitoring and ranging for parameter user beacon.
+//    func stopMonitoringAndRangingUser(user: NotifyUserModel) {
+//        printt("Stopped Monitoring: \(user)")
+//        let beaconRegion = user.beaconRegion
+//        locationManager.stopMonitoring(for: beaconRegion)
+//        locationManager.stopRangingBeacons(in: beaconRegion)
+//    }
     
     // Begins advertising parameter CLBeaconRegion.
     func advertiseDevice(region : CLBeaconRegion) {
+        printt("advertiseDevice")
         let peripheralData = region.peripheralData(withMeasuredPower: nil)
         peripheralManager.startAdvertising(((peripheralData as NSDictionary) as! [String : Any]))
     }
@@ -132,162 +138,61 @@ class NotifyViewController: UIViewController {
     // Observes the victim uuid from the user's Firebase Realtime Database. When a change is observed,
     // starts/stops monitoring/ranging and updates previous victim UUID, as well.
     func observeAddedMonitoringBeacon() {
-        refUsers.child("\(currentUser.accountID)/Notify UUID Model/Monitoring Beacons").observe(.childAdded) { (snapshot) in
-            print(snapshot)
-            let newMonitoringBeaconUUID = snapshot.value as! String
-            //newMonitoringBeaconUUID IS NOT IN THE MONITORING BEACON ARRAY ANYMORE
-            if self.askForConnectionOnIBeacon() == true {
-                self.currentUser.updateMonitoringAndRangingUsers(newUUID: newMonitoringBeaconUUID)
+        printt("observeAddedMonitoringBeacon")
+        refUsers.child("\(currentUser.accountID)/\(FRDKeys.NotifyUUIDModel)/\(FRDKeys.MonitoringBeacons)").observe(.childAdded) { (snapshot) in
+            let addedMonitoringBeaconAccountID = snapshot.value as! String
+            if let user = self.findUserFromUserList(accountID: addedMonitoringBeaconAccountID) {
+                self.locationManager.startMonitoring(for: user.asBeaconRegion())
+            } else {
+                printt("Unable to create NotifyUserModel from provided Account ID")
             }
         }
     }
     
-    func createUserFromFRD(accountID: String) -> NotifyUserModel? {
-        refUsers.child(accountID).observeSingleEvent(of: .value) { (snapshot) in
-            let user = snapshot.value as! [String: Any]
-            
-            // Getting Account ID
-            let userAccountID = user[FRDKeys.AccountID] as! String
-            
-            // Getting Location
-            let userLocation = user[FRDKeys.Location] as! [String: Any]
-            let userCoordinate = userLocation[FRDKeys.Coordinate] as! [String: Any]
-            let userLatitude = userCoordinate[FRDKeys.Latitude] as! CLLocationDegrees
-            let userLongitude = userCoordinate[FRDKeys.Longitude] as! CLLocationDegrees
-            let location = CLLocation(latitude: userLatitude, longitude: userLongitude)
-            
-            // Getting Notify Name Model
-            let userName = user[FRDKeys.NotifyNameModel] as! [String: Any]
-            let userNameFirst = userName[FRDKeys.FirstName] as! String
-            let userNameLast = userName[FRDKeys.LastName] as! String
-            let name = NotifyNameModel(firstName: userNameFirst , lastName: userNameLast)
-            
-            // Getting is notifying
-            let userIsNotifying = user[FRDKeys.IsNotifying] as! Bool
-            
-            let userUUID = user[FRDKeys.NotifyUUIDModel] as! [String: Any]
-            // Getting user UUID
-            let userUUIDUser = userUUID[FRDKeys.UUIDUser] as! String
-            
-            // Getting monitoring beacons
-            var monitoringBeacons = [String:String]()
-            if !self.currentUser.uuid.monitoringBeacons.isEmpty {
-                let userMonitoringBeaconsDictionary1 = userUUID[FRDKeys.MonitoringBeacons] as! DataSnapshot
-                for pair in userMonitoringBeaconsDictionary1.value as! [String:String] {
-                    monitoringBeacons.updateValue(pair.value, forKey: pair.key)
-                }
+    func observeAddedRangingBeacon() {
+        printt("observeAddedRangingBeacon()")
+        refUsers.child("\(currentUser.accountID)/\(FRDKeys.NotifyUUIDModel)/\(FRDKeys.RangingBeacons)").observe(.childAdded) { (snapshot) in
+            let addedRangingBeaconAccountID = snapshot.value as! String
+            if let user = self.findUserFromUserList(accountID: addedRangingBeaconAccountID) {
+                self.locationManager.startRangingBeacons(in: user.asBeaconRegion())
+            } else {
+                printt("Unable to create NotifyUserModel from provided Account ID")
             }
-            // Getting ranging beacons
-            var rangingBeacons = [String:String]()
-            if !self.currentUser.uuid.rangingBeacons.isEmpty {
-                let userRangingBeacons1 = userUUID[FRDKeys.RangingBeacons] as! DataSnapshot
-                for pair in userRangingBeacons1.value as! [String:String] {
-                    rangingBeacons.updateValue(pair.value, forKey: pair.key)
-                }
-            }
-            let uuid = NotifyUUIDModel(uuid: userUUIDUser, monitoringBeacons: monitoringBeacons, rangingBeacons: rangingBeacons)
-            
-            // Creating user object with model and fetched values
-            self.temporaryUser = NotifyUserModel(accountID: userAccountID, name: name, location: location, uuid: uuid, isNotifying: userIsNotifying)
         }
-        return temporaryUser
     }
     
-    //    func createAllUsersFromFRD() -> NotifyUserModel? {
-    //        refUsers.observeSingleEvent(of: .value) { (snapshot) in
-    //            for userObject in snapshot.children {
-    //                let user1 = userObject as! DataSnapshot
-    //                let user = user1.value as! [String: Any]
-    //
-    //                // Getting Account ID
-    //                let userAccountID = user[FRDKeys.AccountID] as! String
-    //
-    //                // Getting Location
-    //                let userLocation = user[FRDKeys.Location] as! [String: Any]
-    //                let userCoordinate = userLocation[FRDKeys.Coordinate] as! [String: Any]
-    //                let userLatitude = userCoordinate[FRDKeys.Latitude] as! CLLocationDegrees
-    //                let userLongitude = userCoordinate[FRDKeys.Longitude] as! CLLocationDegrees
-    //                let location = CLLocation(latitude: userLatitude, longitude: userLongitude)
-    //
-    //                // Getting Notify Name Model
-    //                let userName = user[FRDKeys.NotifyNameModel] as! [String: Any]
-    //                let userNameFirst = userName[FRDKeys.FirstName] as! String
-    //                let userNameLast = userName[FRDKeys.LastName] as! String
-    //                let name = NotifyNameModel(firstName: userNameFirst , lastName: userNameLast)
-    //
-    //                // Getting is notifying
-    //                let userIsNotifying = user[FRDKeys.IsNotifying] as! Bool
-    //
-    //                let userUUID = user[FRDKeys.NotifyUUIDModel] as! [String: Any]
-    //                // Getting user UUID
-    //                let userUUIDUser = userUUID[FRDKeys.UUIDUser] as! String
-    //                // Getting user victim UUID
-    //                let userUUIDVictim = userUUID[FRDKeys.UUIDVictim] as! String
-    //                // Getting use previous victim UUID
-    //                let userUUIDPreviousVictim = userUUID[FRDKeys.UUIDPreviousVictim] as! String
-    //                let uuid = NotifyUUIDModel(uuid: userUUIDUser, uuidVictim: userUUIDVictim, uuidPreviousVictim: userUUIDPreviousVictim)
-    //
-    //                // Creating artist object with model and fetched values
-    //                let userModel = NotifyUserModel(accountID: userAccountID, name: name, location: location, uuid: uuid, isNotifying: userIsNotifying)
-    //                //appending it to list
-    //            }
-    //        }
-    //    }
+    func observeRemovedMonitoringBeacon() {
+        refUsers.child("\(currentUser.accountID)/\(FRDKeys.NotifyUUIDModel)/\(FRDKeys.MonitoringBeacons)").observe(.childRemoved) { (snapshot) in
+            let removedMonitoringBeaconAccountID = snapshot.value as! String
+            if let user = self.findUserFromUserList(accountID: removedMonitoringBeaconAccountID) {
+                self.locationManager.stopMonitoring(for: user.asBeaconRegion())
+            } else {
+                printt("Unable to create NotifyUserModel from provided Account ID")
+            }
+        }
+    }
+    
+    func observeRemovedRangingBeacon() {
+        refUsers.child("\(currentUser.accountID)/\(FRDKeys.NotifyUUIDModel)/\(FRDKeys.RangingBeacons)").observe(.childRemoved) { (snapshot) in
+            let removedRangingBeaconAccountID = snapshot.value as! String
+            self.currentUser.removeRangingAccountID(forAccountID: removedRangingBeaconAccountID)
+            if let user = self.findUserFromUserList(accountID: removedRangingBeaconAccountID) {
+                self.locationManager.stopRangingBeacons(in: user.asBeaconRegion())
+            } else {
+                printt("Unable to create NotifyUserModel from provided Account ID")
+            }
+        }
+    }
     
     // Observes users Firebase Realtime Database. When a change is observed,
     // userList is updated.
     func observeValueUserFromFRD() {
         refUsers.observe(.value, with: { snapshot in
-            if snapshot.hasChildren() {
+            if (snapshot.hasChildren()) {
                 self.userList.removeAll()
                 for userObject in snapshot.children {
                     let user1 = userObject as! DataSnapshot
-                    let user = user1.value as! [String: Any]
-                    
-                    // Getting Account ID
-                    let userAccountID = user[FRDKeys.AccountID] as! String
-                    
-                    // Getting Location
-                    let userLocation = user[FRDKeys.Location] as! [String: Any]
-                    let userCoordinate = userLocation[FRDKeys.Coordinate] as! [String: Any]
-                    let userLatitude = userCoordinate[FRDKeys.Latitude] as! CLLocationDegrees
-                    let userLongitude = userCoordinate[FRDKeys.Longitude] as! CLLocationDegrees
-                    let location = CLLocation(latitude: userLatitude, longitude: userLongitude)
-                    
-                    // Getting Notify Name Model
-                    let userName = user[FRDKeys.NotifyNameModel] as! [String: Any]
-                    let userNameFirst = userName[FRDKeys.FirstName] as! String
-                    let userNameLast = userName[FRDKeys.LastName] as! String
-                    let name = NotifyNameModel(firstName: userNameFirst , lastName: userNameLast)
-                    
-                    // Getting is notifying
-                    let userIsNotifying = user[FRDKeys.IsNotifying] as! Bool
-                    
-                    let userUUID = user[FRDKeys.NotifyUUIDModel] as! [String: Any]
-                    // Getting user UUID
-                    let userUUIDUser = userUUID[FRDKeys.UUIDUser] as! String
-                    
-                    // Getting monitoring beacons
-                    var monitoringBeacons = [String:String]()
-                    if !self.currentUser.uuid.monitoringBeacons.isEmpty {
-                        let userMonitoringBeaconsDictionary1 = userUUID[FRDKeys.MonitoringBeacons] as! DataSnapshot
-                        for pair in userMonitoringBeaconsDictionary1.value as! [String:String] {
-                            monitoringBeacons.updateValue(pair.value, forKey: pair.key)
-                        }
-                    }
-                    // Getting ranging beacons
-                    var rangingBeacons = [String:String]()
-                    if !self.currentUser.uuid.rangingBeacons.isEmpty {
-                        let userRangingBeacons1 = userUUID[FRDKeys.RangingBeacons] as! DataSnapshot
-                        for pair in userRangingBeacons1.value as! [String:String] {
-                            rangingBeacons.updateValue(pair.value, forKey: pair.key)
-                        }
-                    }
-                    let uuid = NotifyUUIDModel(uuid: userUUIDUser, monitoringBeacons: monitoringBeacons, rangingBeacons: rangingBeacons)
-                    
-                    // Creating artist object with model and fetched values
-                    let userModel = NotifyUserModel(accountID: userAccountID, name: name, location: location, uuid: uuid, isNotifying: userIsNotifying)
-                    //appending it to list
+                    let userModel = self.readUserInformation(user1: user1)
                     if (userModel.accountID != self.currentUser.accountID) {
                         self.userList.append(userModel)
                     }
@@ -296,10 +201,58 @@ class NotifyViewController: UIViewController {
         })
     }
     
+    func readUserInformation(user1: DataSnapshot) -> NotifyUserModel {
+        let user = user1.value as! [String: Any]
+        
+        // Getting Account ID
+        let userAccountID = user[FRDKeys.AccountID] as! String
+        
+        // Getting Location
+        let userLocation = user[FRDKeys.Location] as! [String: Any]
+        let userCoordinate = userLocation[FRDKeys.Coordinate] as! [String: Any]
+        let userLatitude = userCoordinate[FRDKeys.Latitude] as! CLLocationDegrees
+        let userLongitude = userCoordinate[FRDKeys.Longitude] as! CLLocationDegrees
+        let location = CLLocation(latitude: userLatitude, longitude: userLongitude)
+        
+        // Getting Notify Name Model
+        let userName = user[FRDKeys.NotifyNameModel] as! [String: Any]
+        let userNameFirst = userName[FRDKeys.FirstName] as! String
+        let userNameLast = userName[FRDKeys.LastName] as! String
+        let name = NotifyNameModel(firstName: userNameFirst , lastName: userNameLast)
+        
+        // Getting is notifying
+        let userIsNotifying = user[FRDKeys.IsNotifying] as! Bool
+        
+        let userUUID = user[FRDKeys.NotifyUUIDModel] as! [String: Any]
+        // Getting user UUID
+        let userUUIDUser = userUUID[FRDKeys.UUIDUser] as! String
+        
+        // Getting monitoring beacons
+        var monitoringBeacons = [String:String]()
+        if (userUUID[FRDKeys.MonitoringBeacons] != nil) {
+            let userMonitoringBeaconsDictionary1 = userUUID[FRDKeys.MonitoringBeacons] as! [String:String]
+            for pair in userMonitoringBeaconsDictionary1 {
+                monitoringBeacons.updateValue(pair.value, forKey: pair.key)
+            }
+        }
+        // Getting ranging beacons
+        var rangingBeacons = [String:String]()
+        if (userUUID[FRDKeys.RangingBeacons] != nil) {
+            let userRangingBeacons1 = userUUID[FRDKeys.RangingBeacons] as! [String:String]
+            for pair in userRangingBeacons1 {
+                rangingBeacons.updateValue(pair.value, forKey: pair.key)
+            }
+        }
+        let uuid = NotifyUUIDModel(uuid: userUUIDUser, monitoringBeacons: monitoringBeacons, rangingBeacons: rangingBeacons)
+        
+        // Creating artist object with model and fetched values
+        return NotifyUserModel(accountID: userAccountID, name: name, location: location, uuid: uuid, isNotifying: userIsNotifying)
+    }
+    
     // Finds user object from userList.
-    func findUserFromUserList(uuid: String) -> NotifyUserModel? {
+    func findUserFromUserList(accountID: String) -> NotifyUserModel? {
         for user in userList {
-            if user.uuid.uuidString == uuid {
+            if user.accountID == accountID {
                 return user
             }
         }
